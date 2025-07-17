@@ -1,64 +1,7 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# ReadySearch Project - Git Ignore
 
-# Virtual Environments
-.venv/
-venv/
-ENV/
-env/
-.virtualenv/
-
-# Environment Variables & Secrets
-.env
-.env.local
-.env.*.local
-*.key
-*.pem
-secrets/
-config/secrets.json
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.project
-.settings/
-
-# OS Generated
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-
-# Logs
-*.log
-logs/
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -73,19 +16,26 @@ pids
 coverage/
 *.lcov
 
-# NYC test coverage
+# nyc test coverage
 .nyc_output
 
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.npm
-.eslintcache
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
 
 # Optional REPL history
 .node_repl_history
@@ -96,130 +46,74 @@ yarn-error.log*
 # Yarn Integrity file
 .yarn-integrity
 
-# Next.js
-.next/
-out/
+# dotenv environment variables file
+.env
+.env.test
+.env.local
+.env.production
 
-# Nuxt.js
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
 .nuxt
 dist
-
-# Gatsby files
-.cache/
-public
 
 # Storybook build outputs
 .out
 .storybook-out
 
-# Temporary folders
-tmp/
-temp/
-*.tmp
-*.temp
+# Vuepress build output
+.vuepress/dist
 
-# Data & Output
-data/temp/
-output/temp/
-*.cache
+# Serverless directories
+.serverless/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
+# FuseBox cache
+.fusebox/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# DynamoDB Local files
+.dynamodb/
 
-# pyenv
-.python-version
+# TernJS port file
+.tern-port
 
-# Playwright
-test-results/
-playwright-report/
-playwright/.cache/
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
 
-# Screenshots (keep structure but ignore content)
-screenshots/*.png
-screenshots/*.jpg
-screenshots/*.jpeg
-!screenshots/.gitkeep
+# VS Code
+.vscode/
 
-# Results and Reports
-results/
-reports/
-*.csv
-*.json
-!package.json
-!package-lock.json
-!tsconfig.json
-!vite.config.ts
+# IDE
+.idea/
 
-# Backup files
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+launcher.log
+
+# File Management
 backups/
-*.backup
-*~
-
-# Archive directory
 archive/
 
-# Local configuration overrides
-config.local.py
-config.local.json
+# Temporary files
+*.tmp
+*.temp
+temp/
 
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Compiled CSS
-*.css.map
-
-# Build artifacts
+# Build outputs
 build/
 dist/
 
-# TypeScript
-*.tsbuildinfo
-
-# Vite
-dist/
-.vite/
-
-# ESLint
-.eslintcache
-
-# Tailwind CSS
-tailwind.config.js.backup
-
-# Lock files (keep package-lock.json but ignore others)
-yarn.lock
-pnpm-lock.yaml
-
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Local development
-.local/
-local/
-
-# System files
-*.lnk
-.htaccess
-.htpasswd
-
-# Personal notes and todos
-TODO.md
-NOTES.md
-personal/
+# Security
+*.key
+*.pem
+secrets/

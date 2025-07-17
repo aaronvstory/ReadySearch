@@ -1,0 +1,10 @@
+{
+  "name": "ReadySearch",
+  "description": "Production-ready automation tool for performing exact name searches on ReadySearch.com.au with React frontend and Python backend",
+  "homepage": "",
+  "private": false,
+  "has_issues": true,
+  "has_projects": true,
+  "has_wiki": true,
+  "auto_init": false
+}

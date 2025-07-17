@@ -91,9 +91,9 @@ async def run_automation_with_progress(session: AutomationSession):
             
             try:
                 # Search for the name
-                search_result = await session.automation._search_single_name(name)
+                search_result = await session.automation._search_single_name_enhanced(name)
                 
-                # Create result entry
+                # Create result entry with enhanced information
                 result = {
                     'name': name,
                     'status': search_result['status'],
@@ -103,7 +103,29 @@ async def run_automation_with_progress(session: AutomationSession):
                 if search_result['status'] == 'Error':
                     result['error'] = search_result.get('error', 'Unknown error')
                 elif search_result['status'] == 'Match':
-                    result['matches_found'] = len(search_result.get('matches', []))
+                    statistics = search_result.get('statistics')
+                    exact_matches = search_result.get('exact_matches', [])
+                    
+                    result['matches_found'] = len(exact_matches)
+                    result['total_results'] = statistics.total_results_found if statistics else 0
+                    result['exact_matches'] = statistics.exact_matches if statistics else 0
+                    result['partial_matches'] = statistics.partial_matches if statistics else 0
+                    result['search_time'] = statistics.search_time if statistics else 0.0
+                    
+                    # Add match details
+                    if exact_matches:
+                        result['match_details'] = []
+                        for match in exact_matches:
+                            result['match_details'].append({
+                                'matched_name': match.name,
+                                'location': match.location,
+                                'confidence': match.confidence_score,
+                                'match_type': match.match_type
+                            })
+                elif search_result['status'] == 'No Match':
+                    statistics = search_result.get('statistics')
+                    result['total_results'] = statistics.total_results_found if statistics else 0
+                    result['search_time'] = statistics.search_time if statistics else 0.0
                     
                 session.results.append(result)
                 
