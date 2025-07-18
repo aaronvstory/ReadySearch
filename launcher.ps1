@@ -22,7 +22,7 @@ $Colors = @{
 # Global configuration
 $Config = @{
     ProjectName = "ReadySearch"
-    BasePort = 3000
+    BasePort = 5173
     NgrokRegion = "us"
     MaxConnections = 10
     LogFile = "launcher.log"
@@ -363,12 +363,17 @@ function Start-DevServer {
             $packageContent = Get-Content "package.json" | ConvertFrom-Json
             if ($packageContent.scripts.dev) {
                 Write-ColoredOutput "Starting with NPM dev script..." -Color "Info" -Level "INFO"
-                $env:PORT = $Port
-                Start-Process "npm" -ArgumentList "run", "dev" -NoNewWindow
+                # For Vite, we need to set the port differently
+                if ($packageContent.devDependencies.vite) {
+                    Start-Process "cmd" -ArgumentList "/c", "npm", "run", "dev", "--", "--port", "$Port" -NoNewWindow
+                } else {
+                    $env:PORT = $Port
+                    Start-Process "cmd" -ArgumentList "/c", "npm", "run", "dev" -NoNewWindow
+                }
             } elseif ($packageContent.scripts.start) {
                 Write-ColoredOutput "Starting with NPM start script..." -Color "Info" -Level "INFO"
                 $env:PORT = $Port
-                Start-Process "npm" -ArgumentList "start" -NoNewWindow
+                Start-Process "cmd" -ArgumentList "/c", "npm", "start" -NoNewWindow
             } else {
                 Write-ColoredOutput "No dev/start script found in package.json" -Color "Error" -Level "ERROR"
                 return $false
@@ -478,7 +483,7 @@ function Show-ProcessMonitor {
     Write-Host ""
     
     # Check ports
-    $ports = @($Config.BasePort, ($Config.BasePort + 1), 4040, 8080)
+    $ports = @($Config.BasePort, 3000, 5173, 5174, 4040, 8080)
     Write-Host "Port Status:" -ForegroundColor $Colors.Info
     foreach ($port in $ports) {
         $inUse = Test-PortInUse -Port $port
