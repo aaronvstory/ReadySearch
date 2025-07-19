@@ -337,7 +337,10 @@ class EnhancedReadySearchCLI:
             
             self.console.print(f"[green]✅ Results exported successfully to {filename}[/green]")
             
-        except Exception as e:
+        except KeyboardInterrupt:
+                    self.console.print("[yellow]⚠️ Keyboard interruption detected. Exiting gracefully...[/yellow]")
+                    return
+                except Exception as e:
             self.console.print(f"[red]❌ Export failed: {str(e)}[/red]")
     
     def export_json(self, filename: str):
@@ -548,7 +551,10 @@ Enter names in these formats:
             except KeyboardInterrupt:
                 if Confirm.ask("\nAre you sure you want to exit?"):
                     break
-            except Exception as e:
+            except KeyboardInterrupt:
+                    self.console.print("[yellow]⚠️ Keyboard interruption detected. Exiting gracefully...[/yellow]")
+                    return
+                except Exception as e:
                 self.console.print(f"[red]❌ An error occurred: {str(e)}[/red]")
                 Prompt.ask("Press Enter to continue", default="")
         
