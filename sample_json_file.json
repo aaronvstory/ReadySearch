@@ -1,0 +1,15 @@
+{
+  "session_id": "0fb662c7-8c2a-4a6d-a3be-467939f729bc",
+  "generated_at": "2025-07-18T01:48:29.089116",
+  "total_searches": 1,
+  "session_status": "running",
+  "search_results": [
+    {
+      "name": "John Smith",
+      "status": "No Match",
+      "timestamp": "2025-07-18T01:48:13.728350",
+      "total_results": 11,
+      "search_time": 0.4777764999962528
+    }
+  ]
+}

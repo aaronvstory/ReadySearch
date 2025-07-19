@@ -48,6 +48,10 @@ class AdvancedNameMatcher:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         
+        # Common titles and suffixes to filter out
+        self.titles = {'mr', 'mrs', 'ms', 'miss', 'dr', 'prof', 'sir', 'lady'}
+        self.suffixes = {'jr', 'sr', 'ii', 'iii', 'iv', 'v'}
+        
         # Common name variations and nicknames
         self.name_variations = {
             # Full name → shorter variations
@@ -324,6 +328,197 @@ class AdvancedNameMatcher:
                 }
         
         return None
+
+    def match_names_strict(self, search_name: str, result_name: str, exact_first_name: bool = False) -> MatchResult:
+        """
+        Strict name matching with user-specified criteria:
+        
+        EXACT RECORD MATCH CRITERIA:
+        - Last Name - Exact Match only
+        - First Name - Exact Match only  
+        - Middle Name (if present) - Exact Match only
+        - Year of Birth - Exact Match only
+        
+        PARTIAL RECORD MATCH CRITERIA:
+        - Last Name - Exact Match only (if last name is off by 1 letter, it's NO MATCH)
+        - First Name - Partial Match (if exact_first_name=False)
+        - Middle Name - Any (including non-match)
+        - Year of Birth - Partial Match
+        
+        Args:
+            search_name: The name being searched for
+            result_name: The name found in results
+            exact_first_name: If True, requires exact first name match (stricter)
+            
+        Returns:
+            MatchResult with strict matching rules applied
+        """
+        if not search_name or not result_name:
+            return MatchResult(
+                match_type=MatchType.NOT_MATCHED,
+                confidence=0.0,
+                is_match=False,
+                reasoning="Empty name provided",
+                details={"search_name": search_name, "result_name": result_name}
+            )
+        
+        # Normalize names for comparison
+        norm_search = self._normalize_name(search_name)
+        norm_result = self._normalize_name(result_name)
+        
+        search_words = norm_search.split()
+        result_words = norm_result.split()
+        
+        if len(search_words) < 1 or len(result_words) < 1:
+            return MatchResult(
+                match_type=MatchType.NOT_MATCHED,
+                confidence=0.0,
+                is_match=False,
+                reasoning="Invalid name format",
+                details={"search_words": search_words, "result_words": result_words}
+            )
+        
+        self.logger.debug(f"Strict matching '{search_name}' vs '{result_name}' (exact_first_name={exact_first_name})")
+        
+        # Extract first and last names
+        search_first = search_words[0]
+        search_last = search_words[-1] if len(search_words) > 1 else search_words[0]
+        search_middle = search_words[1:-1] if len(search_words) > 2 else []
+        
+        result_first = result_words[0]
+        result_last = result_words[-1] if len(result_words) > 1 else result_words[0]
+        result_middle = result_words[1:-1] if len(result_words) > 2 else []
+        
+        # CRITICAL: Last name must ALWAYS match exactly
+        if search_last != result_last:
+            return MatchResult(
+                match_type=MatchType.NOT_MATCHED,
+                confidence=0.0,
+                is_match=False,
+                reasoning=f"Last name mismatch: '{search_last}' != '{result_last}' (strict criteria: last name must be exact)",
+                details={
+                    "search_last": search_last,
+                    "result_last": result_last,
+                    "rule_violated": "last_name_exact_required"
+                }
+            )
+        
+        # Check first name matching
+        first_name_exact_match = (search_first == result_first)
+        first_name_variation_match = False
+        
+        if not first_name_exact_match and not exact_first_name:
+            # Check for name variations (John -> Jonathan, etc.)
+            first_name_variation_match = self._check_name_variation(search_first, result_first)
+        
+        # Check middle name matching
+        middle_names_match = True
+        middle_match_type = "exact"
+        
+        if search_middle and result_middle:
+            # If search has middle names, they must all be present in result
+            if not all(m in result_middle for m in search_middle):
+                middle_names_match = False
+                middle_match_type = "mismatch"
+        elif search_middle and not result_middle:
+            # Search has middle names but result doesn't
+            middle_names_match = False
+            middle_match_type = "missing_in_result"
+        elif not search_middle and result_middle:
+            # Result has additional middle names - this is okay for partial matches
+            middle_match_type = "additional_in_result"
+        
+        # Determine match result based on strict criteria
+        if first_name_exact_match and middle_names_match and middle_match_type == "exact":
+            # EXACT MATCH: all components match exactly
+            return MatchResult(
+                match_type=MatchType.EXACT,
+                confidence=1.0,
+                is_match=True,
+                reasoning=f"Exact match: all name components match exactly",
+                details={
+                    "search_parts": {"first": search_first, "middle": search_middle, "last": search_last},
+                    "result_parts": {"first": result_first, "middle": result_middle, "last": result_last},
+                    "match_quality": "exact_all_components"
+                }
+            )
+        elif first_name_exact_match and middle_match_type in ["additional_in_result", "exact"]:
+            # EXACT MATCH: first and last exact, result has additional middle names
+            return MatchResult(
+                match_type=MatchType.EXACT,
+                confidence=0.98,
+                is_match=True,
+                reasoning=f"Exact match with additional middle names in result",
+                details={
+                    "search_parts": {"first": search_first, "middle": search_middle, "last": search_last},
+                    "result_parts": {"first": result_first, "middle": result_middle, "last": result_last},
+                    "match_quality": "exact_with_additional_middle"
+                }
+            )
+        elif first_name_variation_match and not exact_first_name:
+            # PARTIAL MATCH: first name variation allowed, last name exact
+            return MatchResult(
+                match_type=MatchType.PARTIAL_VARIATION,
+                confidence=0.85,
+                is_match=True,
+                reasoning=f"Partial match: first name variation '{search_first}' -> '{result_first}', last name exact",
+                details={
+                    "search_parts": {"first": search_first, "middle": search_middle, "last": search_last},
+                    "result_parts": {"first": result_first, "middle": result_middle, "last": result_last},
+                    "match_quality": "partial_first_name_variation",
+                    "first_name_variation": True
+                }
+            )
+        else:
+            # NO MATCH: criteria not met
+            reasons = []
+            if not first_name_exact_match and exact_first_name:
+                reasons.append(f"first name exact required but '{search_first}' != '{result_first}'")
+            elif not first_name_exact_match and not first_name_variation_match:
+                reasons.append(f"first name '{search_first}' has no valid variation to '{result_first}'")
+            if not middle_names_match:
+                reasons.append(f"middle name mismatch: {middle_match_type}")
+            
+            return MatchResult(
+                match_type=MatchType.NOT_MATCHED,
+                confidence=0.0,
+                is_match=False,
+                reasoning=f"No match: {'; '.join(reasons)}",
+                details={
+                    "search_parts": {"first": search_first, "middle": search_middle, "last": search_last},
+                    "result_parts": {"first": result_first, "middle": result_middle, "last": result_last},
+                    "failed_criteria": reasons,
+                    "exact_first_name_required": exact_first_name
+                }
+            )
+    
+    def _check_name_variation(self, search_name: str, result_name: str) -> bool:
+        """
+        Check if result_name is a valid variation of search_name.
+        
+        Args:
+            search_name: The name being searched for
+            result_name: The name found in results
+            
+        Returns:
+            True if result_name is a valid variation of search_name
+        """
+        search_lower = search_name.lower()
+        result_lower = result_name.lower()
+        
+        # Check direct variations
+        if search_lower in self.name_variations:
+            if result_lower in self.name_variations[search_lower]:
+                return True
+        
+        # Check reverse variations (Jonathan -> John)
+        for full_name, variations in self.name_variations.items():
+            if search_lower in variations and result_lower == full_name:
+                return True
+            if result_lower in variations and search_lower == full_name:
+                return True
+        
+        return False
 
     def _check_middle_name_match(self, search_words: List[str], result_words: List[str]) -> Optional[Dict[str, Any]]:
         """

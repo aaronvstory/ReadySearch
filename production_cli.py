@@ -209,8 +209,9 @@ class ProductionCLI:
                                     if name_part:
                                         print(f"      📝 Extracted: Name='{name_part}', Date='{date_match}'")
                                         
-                                        # Use advanced matcher to determine match quality
-                                        match_result = self.matcher.match_names(search_record.name, name_part)
+                                        # Use STRICT advanced matcher to enforce last name exact matching
+                                        exact_first_name = getattr(search_record, 'exact_matching', False)
+                                        match_result = self.matcher.match_names_strict(search_record.name, name_part, exact_first_name)
                                         
                                         if match_result.match_type != MatchType.NOT_MATCHED:
                                             matches_found += 1
@@ -258,7 +259,9 @@ class ProductionCLI:
                                             if potential_name and len(potential_name) <= 50:  # Reasonable name length
                                                 print(f"      📝 Clean extraction: Name='{potential_name}', Date='{date_part}'")
                                                 
-                                                match_result = self.matcher.match_names(search_record.name, potential_name)
+                                                # Use STRICT matching with user preference
+                                                exact_first_name = getattr(search_record, 'exact_matching', False)
+                                                match_result = self.matcher.match_names_strict(search_record.name, potential_name, exact_first_name)
                                                 
                                                 if match_result.match_type != MatchType.NOT_MATCHED:
                                                     matches_found += 1

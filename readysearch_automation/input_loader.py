@@ -4,8 +4,16 @@ import pandas as pd
 import logging
 from typing import List, Optional
 from pathlib import Path
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
+
+@dataclass
+class SearchRecord:
+    """Data class for search records with name and optional birth year."""
+    name: str
+    birth_year: Optional[int] = None
+    exact_matching: bool = False  # Controls first name matching strictness
 
 class InputLoader:
     """Handles loading and validation of input data."""

@@ -1,0 +1,23 @@
+{
+  "export_info": {
+    "timestamp": "2025-07-18T20:29:30.087683",
+    "total_results": 1,
+    "tool_version": "Enhanced ReadySearch CLI v2.0"
+  },
+  "results": [
+    {
+      "name": "Test",
+      "status": "Match",
+      "search_duration": 5.0,
+      "matches_found": 1,
+      "exact_matches": 1,
+      "partial_matches": 0,
+      "match_category": "EXACT",
+      "match_reasoning": "Test",
+      "detailed_results": [],
+      "timestamp": "2025-07-18T20:29:30.087672",
+      "birth_year": null,
+      "error": null
+    }
+  ]
+}

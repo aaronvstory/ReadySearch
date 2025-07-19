@@ -1,0 +1,71 @@
+{
+  "export_info": {
+    "timestamp": "2025-07-18T20:29:12.855239",
+    "total_results": 3,
+    "tool_version": "Enhanced ReadySearch CLI v2.0"
+  },
+  "results": [
+    {
+      "name": "John Smith",
+      "status": "Match",
+      "search_duration": 6.83,
+      "matches_found": 2,
+      "exact_matches": 2,
+      "partial_matches": 0,
+      "match_category": "EXACT MATCH",
+      "match_reasoning": "Found exact matches",
+      "detailed_results": [
+        {
+          "matched_name": "JOHN SMITH",
+          "date_of_birth": "15/03/1985",
+          "match_type": "EXACT MATCH",
+          "confidence": 1.0
+        },
+        {
+          "matched_name": "JOHN SMITH",
+          "date_of_birth": "15/03/1985",
+          "match_type": "EXACT MATCH",
+          "confidence": 1.0
+        }
+      ],
+      "timestamp": "2025-07-18T20:29:12.854062",
+      "birth_year": 1985,
+      "error": null
+    },
+    {
+      "name": "Jane Doe",
+      "status": "No Match",
+      "search_duration": 5.21,
+      "matches_found": 0,
+      "exact_matches": 0,
+      "partial_matches": 0,
+      "match_category": "NOT MATCHED",
+      "match_reasoning": "No meaningful matches found",
+      "detailed_results": [],
+      "timestamp": "2025-07-18T20:29:12.854072",
+      "birth_year": 1990,
+      "error": null
+    },
+    {
+      "name": "Test Person",
+      "status": "Match",
+      "search_duration": 7.45,
+      "matches_found": 1,
+      "exact_matches": 1,
+      "partial_matches": 0,
+      "match_category": "EXACT MATCH",
+      "match_reasoning": "Found exact match",
+      "detailed_results": [
+        {
+          "matched_name": "TEST PERSON",
+          "date_of_birth": "UNKNOWN",
+          "match_type": "EXACT MATCH",
+          "confidence": 0.95
+        }
+      ],
+      "timestamp": "2025-07-18T20:29:12.854075",
+      "birth_year": null,
+      "error": null
+    }
+  ]
+}

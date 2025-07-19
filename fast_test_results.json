@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "total_results": 1,
+    "generated_at": "2025-07-18 14:14:27",
+    "matches_found": 0,
+    "no_matches": 0,
+    "errors": 1
+  },
+  "results": [
+    {
+      "name": "Ghafoor Jaggi Nadery",
+      "status": "Error",
+      "timestamp": "2025-07-18 14:14:27",
+      "error": "Manual user test failed - birth year selection not working!",
+      "search_time": 0.0
+    }
+  ]
+}

@@ -46,48 +46,71 @@ class GUISearchResult:
     error: Optional[str] = None
 
 class ModernStyle:
-    """Modern styling configuration for the GUI"""
+    """Professional modern styling configuration for the GUI with better contrast"""
     
-    # Enhanced color palette with professional tints and gradients
+    # Improved color palette with better contrast and readability
     COLORS = {
-        'primary': '#1E3A8A',        # Deep blue
-        'primary_light': '#3B82F6',  # Light blue
-        'primary_dark': '#1E40AF',   # Darker blue
-        'secondary': '#059669',      # Emerald green
-        'secondary_light': '#10B981', # Light emerald
-        'success': '#16A34A',        # Green
-        'success_light': '#22C55E',  # Light green
-        'warning': '#EA580C',        # Orange
-        'warning_light': '#FB923C',  # Light orange
-        'danger': '#DC2626',         # Red
-        'danger_light': '#EF4444',   # Light red
-        'background': '#F8FAFC',     # Very light blue-gray
-        'surface': '#FFFFFF',        # Pure white
-        'surface_alt': '#F1F5F9',    # Alternate surface
-        'border': '#E2E8F0',         # Light border
-        'border_focus': '#3B82F6',   # Focus border
-        'text_primary': '#0F172A',   # Dark slate
-        'text_secondary': '#475569',  # Medium slate
-        'text_muted': '#94A3B8',     # Light slate
-        'accent': '#7C3AED',         # Purple
-        'accent_light': '#8B5CF6',   # Light purple
-        'gradient_start': '#1E3A8A', # Gradient start
-        'gradient_end': '#3B82F6',   # Gradient end
-        'hover': '#EFF6FF',          # Light blue hover
-        'active': '#DBEAFE'          # Blue active state
+        # Primary colors with better contrast
+        'primary': '#1E40AF',        # Deep blue for primary actions
+        'primary_light': '#3B82F6',  # Bright blue for hover states
+        'primary_dark': '#1E3A8A',   # Darker blue for pressed states
+        'secondary': '#059669',      # Emerald for secondary actions
+        'secondary_light': '#10B981', # Light emerald for hover
+        'success': '#16A34A',        # Success green with better contrast
+        'success_light': '#22C55E',  # Light success green for hover
+        'warning': '#DC2626',        # Better contrast warning red
+        'warning_light': '#EF4444',  # Light warning for hover
+        'danger': '#B91C1C',         # Deep red for danger/delete actions
+        'danger_light': '#DC2626',   # Light red for hover
+        
+        # Background colors with better contrast
+        'background': '#F9FAFB',     # Very light gray background (main)
+        'surface': '#FFFFFF',        # Pure white surface for cards
+        'surface_alt': '#F3F4F6',    # Light gray for alternating surfaces
+        'surface_hover': '#E5E7EB',  # Hover surface
+        'surface_dark': '#E5E7EB',   # Darker surface for headers
+        
+        # Border colors
+        'border': '#D1D5DB',         # Medium gray border
+        'border_focus': '#3B82F6',   # Bright blue focus border
+        'border_dark': '#9CA3AF',    # Darker border for emphasis
+        
+        # Text colors with maximum contrast
+        'text_primary': '#111827',   # Almost black text (maximum contrast)
+        'text_secondary': '#374151', # Dark gray text
+        'text_muted': '#6B7280',     # Medium gray text for labels
+        'text_light': '#9CA3AF',     # Light gray text
+        'text_white': '#FFFFFF',     # White text for dark backgrounds
+        
+        # Input colors
+        'input_bg': '#FFFFFF',       # Pure white input background
+        'input_border': '#D1D5DB',   # Medium gray input border
+        'input_focus_bg': '#F9FAFB', # Slight gray on focus
+        
+        # Special colors
+        'accent': '#8B5CF6',         # Purple accent
+        'accent_light': '#A78BFA',   # Light purple for hover
+        'header_bg': '#1F2937',      # Dark gray-blue for header
+        'header_text': '#FFFFFF',    # White text for header
+        'treeview_alt': '#F9FAFB',   # Alternating row color
+        'scrollbar': '#D1D5DB',      # Scrollbar color
+        'scrollbar_hover': '#9CA3AF', # Scrollbar hover color
+        'hover': '#E5E7EB',          # General hover state
+        'active': '#D1D5DB'          # Active/pressed state
     }
     
-    # Enhanced fonts with better hierarchy
+    # Enhanced fonts with better hierarchy and readability
     FONTS = {
-        'title': ('Segoe UI', 18, 'bold'),
-        'subtitle': ('Segoe UI', 14, 'bold'),
-        'heading': ('Segoe UI', 12, 'bold'),
-        'body': ('Segoe UI', 10),
-        'body_large': ('Segoe UI', 11),
-        'small': ('Segoe UI', 9),
-        'tiny': ('Segoe UI', 8),
-        'code': ('Consolas', 10),
-        'button': ('Segoe UI', 10, 'bold')
+        'title': ('Segoe UI', 20, 'bold'),      # Larger title
+        'subtitle': ('Segoe UI', 14),           # Normal weight subtitle
+        'heading': ('Segoe UI', 13, 'bold'),    # Section headings
+        'body': ('Segoe UI', 11),               # Standard body text
+        'body_large': ('Segoe UI', 12),         # Large body text
+        'small': ('Segoe UI', 10),              # Small text
+        'tiny': ('Segoe UI', 9),                # Tiny text
+        'code': ('Consolas', 11),               # Code/monospace
+        'button': ('Segoe UI', 11, 'bold'),     # Button text
+        'label': ('Segoe UI', 11)               # Label text
     }
     
     @classmethod
@@ -103,15 +126,16 @@ class ModernStyle:
             'Primary.TButton',
             background=cls.COLORS['primary'],
             foreground='white',
-            borderwidth=1,
+            borderwidth=2,
             focuscolor='none',
-            padding=(15, 8),
-            font=cls.FONTS['button']
+            padding=(12, 8),
+            font=cls.FONTS['button'],
+            relief='flat'
         )
         style.map('Primary.TButton',
             background=[('active', cls.COLORS['primary_light']),
                        ('pressed', cls.COLORS['primary_dark'])],
-            bordercolor=[('focus', cls.COLORS['border_focus'])]
+            relief=[('pressed', 'sunken')]
         )
         
         style.configure(
@@ -196,16 +220,16 @@ class ModernStyle:
         # Configure enhanced label styles
         style.configure(
             'Title.TLabel',
-            background=cls.COLORS['primary'],
-            foreground='white',
+            background=cls.COLORS['header_bg'],
+            foreground=cls.COLORS['text_white'],
             font=cls.FONTS['title'],
             padding=(10, 10)
         )
         
         style.configure(
             'Subtitle.TLabel',
-            background=cls.COLORS['primary'],
-            foreground='white',
+            background=cls.COLORS['header_bg'],
+            foreground=cls.COLORS['text_white'],
             font=cls.FONTS['subtitle'],
             padding=(10, 5)
         )
@@ -232,17 +256,37 @@ class ModernStyle:
             font=cls.FONTS['small']
         )
         
-        # Configure entry styles
+        # Configure entry styles for better visibility
         style.configure(
             'Modern.TEntry',
-            borderwidth=1,
+            fieldbackground=cls.COLORS['input_bg'],
+            background=cls.COLORS['input_bg'],
+            foreground=cls.COLORS['text_primary'],
+            borderwidth=2,
             bordercolor=cls.COLORS['border'],
             focuscolor=cls.COLORS['border_focus'],
-            padding=(8, 6),
-            font=cls.FONTS['body']
+            insertcolor=cls.COLORS['text_primary'],
+            padding=(10, 8),
+            font=cls.FONTS['body'],
+            relief='solid'
         )
         style.map('Modern.TEntry',
-            bordercolor=[('focus', cls.COLORS['border_focus'])]
+            bordercolor=[('focus', cls.COLORS['border_focus'])],
+            fieldbackground=[('focus', cls.COLORS['input_focus_bg'])]
+        )
+        
+        # Configure checkbutton styles for dark mode
+        style.configure(
+            'Modern.TCheckbutton',
+            background=cls.COLORS['surface'],
+            foreground=cls.COLORS['text_primary'],
+            focuscolor='none',
+            font=cls.FONTS['body']
+        )
+        style.map('Modern.TCheckbutton',
+            background=[('active', cls.COLORS['surface_hover']),
+                       ('pressed', cls.COLORS['surface_alt'])],
+            foreground=[('active', cls.COLORS['text_primary'])]
         )
         
         # Configure notebook styles
@@ -300,6 +344,48 @@ class ModernStyle:
             foreground=cls.COLORS['text_primary'],
             font=cls.FONTS['heading']
         )
+    
+    @classmethod
+    def configure_tk_widgets(cls, root):
+        """Configure regular tk widgets for dark mode"""
+        # Configure root window
+        root.configure(bg=cls.COLORS['background'])
+        
+        # Default text widget configuration for dark mode
+        root.option_add('*Text.background', cls.COLORS['input_bg'])
+        root.option_add('*Text.foreground', cls.COLORS['text_primary'])
+        root.option_add('*Text.insertBackground', cls.COLORS['text_primary'])
+        root.option_add('*Text.selectBackground', cls.COLORS['primary'])
+        root.option_add('*Text.selectForeground', 'white')
+        root.option_add('*Text.font', 'Consolas 10')
+        
+        # Entry widget configuration for dark mode
+        root.option_add('*Entry.background', cls.COLORS['input_bg'])
+        root.option_add('*Entry.foreground', cls.COLORS['text_primary'])
+        root.option_add('*Entry.insertBackground', cls.COLORS['text_primary'])
+        root.option_add('*Entry.selectBackground', cls.COLORS['primary'])
+        root.option_add('*Entry.selectForeground', 'white')
+        
+        # Scrollbar configuration for dark mode
+        root.option_add('*Scrollbar.background', cls.COLORS['surface_alt'])
+        root.option_add('*Scrollbar.troughColor', cls.COLORS['surface'])
+        root.option_add('*Scrollbar.activeBackground', cls.COLORS['primary'])
+        
+        # Listbox configuration for dark mode
+        root.option_add('*Listbox.background', cls.COLORS['input_bg'])
+        root.option_add('*Listbox.foreground', cls.COLORS['text_primary'])
+        root.option_add('*Listbox.selectBackground', cls.COLORS['primary'])
+        root.option_add('*Listbox.selectForeground', 'white')
+        
+        return {
+            'bg': cls.COLORS['background'],
+            'text_bg': cls.COLORS['input_bg'],
+            'text_fg': cls.COLORS['text_primary'],
+            'select_bg': cls.COLORS['primary'],
+            'select_fg': 'white',
+            'border': cls.COLORS['border'],
+            'insert_bg': cls.COLORS['text_primary']
+        }
 
 class SearchProgressWindow:
     """Enhanced progress window for search operations with modern styling"""
@@ -437,16 +523,37 @@ class ReadySearchGUI:
         self.create_widgets()
         
     def setup_main_window(self):
-        """Setup main window configuration"""
+        """Setup main window configuration with responsive sizing"""
         self.root.title("ReadySearch Advanced GUI v2.0")
-        self.root.geometry("1200x800")
-        self.root.minsize(1000, 600)
         
-        # Center window on screen
+        # Get screen dimensions for responsive sizing
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        # Calculate responsive window size (90% of screen, max 1400x900)
+        window_width = min(int(screen_width * 0.9), 1400)
+        window_height = min(int(screen_height * 0.85), 900)
+        
+        # Set minimum size to ensure usability
+        self.root.minsize(1000, 700)
+        
+        # Center window on screen with responsive sizing
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (1200 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (800 // 2)
-        self.root.geometry(f"1200x800+{x}+{y}")
+        x = (screen_width // 2) - (window_width // 2)
+        y = (screen_height // 2) - (window_height // 2) - 20  # Slightly higher
+        
+        # Ensure window doesn't go off-screen
+        x = max(10, min(x, screen_width - window_width - 10))
+        y = max(10, min(y, screen_height - window_height - 40))
+        
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+        
+        # Make window resizable with proper constraints
+        self.root.resizable(True, True)
+        
+        # Configure grid weight for responsive layout
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
         
         # Configure icon (if available)
         try:
@@ -455,11 +562,12 @@ class ReadySearchGUI:
             pass
     
     def setup_styles(self):
-        """Setup enhanced modern styling"""
+        """Setup enhanced styling"""
+        # Configure TTK styles
         ModernStyle.configure_ttk_styles(self.root)
         
-        # Configure root background with modern color
-        self.root.configure(bg=ModernStyle.COLORS['background'])
+        # Configure regular tk widgets
+        ModernStyle.configure_tk_widgets(self.root)
     
     def create_widgets(self):
         """Create main GUI widgets"""
@@ -469,145 +577,218 @@ class ReadySearchGUI:
     
     def create_header(self):
         """Create modern header section with enhanced styling"""
-        header_frame = ttk.Frame(self.root, style='Header.TFrame')
+        # Header with dark background for better contrast
+        header_frame = tk.Frame(self.root, bg=ModernStyle.COLORS['header_bg'], height=120)
         header_frame.pack(fill=tk.X, padx=0, pady=0)
+        header_frame.pack_propagate(False)
         
-        # Title and subtitle with modern styling
-        title_label = ttk.Label(
-            header_frame,
+        # Inner frame for centering content
+        inner_frame = tk.Frame(header_frame, bg=ModernStyle.COLORS['header_bg'])
+        inner_frame.pack(expand=True)
+        
+        # Title with larger font and better spacing
+        title_label = tk.Label(
+            inner_frame,
             text="🔍 ReadySearch Advanced GUI v2.0",
-            style='Title.TLabel'
+            font=ModernStyle.FONTS['title'],
+            bg=ModernStyle.COLORS['header_bg'],
+            fg=ModernStyle.COLORS['text_white']
         )
-        title_label.pack(pady=(20, 5))
+        title_label.pack(pady=(25, 5))
         
-        subtitle_label = ttk.Label(
-            header_frame,
+        # Subtitle
+        subtitle_label = tk.Label(
+            inner_frame,
             text="Professional Name Search Tool with Enhanced Export Capabilities",
-            style='Subtitle.TLabel'
+            font=ModernStyle.FONTS['subtitle'],
+            bg=ModernStyle.COLORS['header_bg'],
+            fg=ModernStyle.COLORS['text_white']
         )
-        subtitle_label.pack(pady=(0, 20))
+        subtitle_label.pack(pady=(0, 25))
     
     def create_main_content(self):
         """Create enhanced main content area with modern styling"""
-        # Main container with modern background
-        main_frame = ttk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=10)
-        main_frame.configure(style='Card.TFrame')
+        # Main container with padding
+        main_container = tk.Frame(self.root, bg=ModernStyle.COLORS['background'])
+        main_container.pack(fill=tk.BOTH, expand=True, padx=0, pady=0)
         
-        # Create paned window for resizable sections with enhanced styling
-        paned_window = ttk.PanedWindow(main_frame, orient=tk.HORIZONTAL)
-        paned_window.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        # Create paned window for resizable sections
+        self.paned_window = tk.PanedWindow(
+            main_container, 
+            orient=tk.HORIZONTAL,
+            bg=ModernStyle.COLORS['background'],
+            sashwidth=8,
+            sashrelief='flat',
+            borderwidth=0
+        )
+        self.paned_window.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
-        # Left panel - Enhanced search input
-        self.create_search_panel(paned_window)
+        # Left panel - Search input (narrower)
+        self.create_search_panel(self.paned_window)
         
-        # Right panel - Enhanced results display
-        self.create_results_panel(paned_window)
+        # Right panel - Results display (wider)
+        self.create_results_panel(self.paned_window)
     
     def create_search_panel(self, parent):
         """Create enhanced search input panel with modern styling"""
-        search_frame = ttk.Frame(parent, style='Sidebar.TFrame')
-        parent.add(search_frame, weight=1)
+        # Create frame for search panel
+        search_frame = tk.Frame(parent, bg=ModernStyle.COLORS['surface'], relief='solid', borderwidth=1)
+        parent.add(search_frame, width=450, minsize=400)
         
-        # Search section title with modern styling
-        search_title = ttk.Label(
+        # Search section title
+        search_title = tk.Label(
             search_frame,
             text="🔍 Search Configuration",
-            style='Heading.TLabel'
+            font=ModernStyle.FONTS['heading'],
+            bg=ModernStyle.COLORS['surface'],
+            fg=ModernStyle.COLORS['text_primary']
         )
-        search_title.pack(pady=(20, 15), padx=20)
+        search_title.pack(pady=(15, 10), padx=20)
         
-        # Search input frame with better spacing
-        input_frame = ttk.Frame(search_frame)
-        input_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
+        # Scrollable frame for search content
+        canvas = tk.Canvas(search_frame, bg=ModernStyle.COLORS['surface'], highlightthickness=0)
+        scrollbar = ttk.Scrollbar(search_frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg=ModernStyle.COLORS['surface'])
         
-        # Quick add section (NEW: as requested by user)
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Pack scrollbar and canvas
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True, padx=(20, 0), pady=(0, 20))
+        
+        # Quick add section
         quick_add_frame = ttk.LabelFrame(
-            input_frame, 
+            scrollable_frame, 
             text="✨ Quick Add Names", 
             padding="15",
             style='Modern.TLabelframe'
         )
         quick_add_frame.pack(fill=tk.X, pady=(0, 15))
         
-        # Quick add input row
-        quick_input_frame = ttk.Frame(quick_add_frame)
-        quick_input_frame.pack(fill=tk.X, pady=(0, 10))
-        
         # Name input
-        ttk.Label(quick_input_frame, text="Name:", style='Body.TLabel').pack(anchor=tk.W)
+        ttk.Label(quick_add_frame, text="Name:", style='Body.TLabel').pack(anchor=tk.W)
         self.quick_name_entry = ttk.Entry(
-            quick_input_frame, 
+            quick_add_frame, 
             font=ModernStyle.FONTS['body_large'],
             style='Modern.TEntry'
         )
         self.quick_name_entry.pack(fill=tk.X, pady=(3, 8))
         
-        # Birth year input (in same row)
-        year_frame = ttk.Frame(quick_input_frame)
+        # Birth year input
+        year_frame = ttk.Frame(quick_add_frame)
         year_frame.pack(fill=tk.X, pady=(0, 10))
         
         ttk.Label(year_frame, text="Birth Year (optional):", style='Body.TLabel').pack(side=tk.LEFT)
         self.quick_year_entry = ttk.Entry(
             year_frame,
-            width=8,
+            width=10,
             font=ModernStyle.FONTS['body_large'],
             style='Modern.TEntry'
         )
-        self.quick_year_entry.pack(side=tk.RIGHT)
+        self.quick_year_entry.pack(side=tk.RIGHT, padx=(10, 0))
         
-        # Add button
+        # Buttons in a row
+        btn_frame = ttk.Frame(quick_add_frame)
+        btn_frame.pack(fill=tk.X, pady=(5, 0))
+        
         add_btn = ttk.Button(
-            quick_input_frame,
+            btn_frame,
             text="➕ Add to List",
             style='Secondary.TButton',
             command=self.add_name_to_list
         )
-        add_btn.pack(fill=tk.X, pady=(5, 0))
+        add_btn.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
         
-        # Load test data button (NEW: for easy test data loading)
         test_data_btn = ttk.Button(
-            quick_add_frame,
+            btn_frame,
             text="📝 Load Test Data",
             style='Warning.TButton',
             command=self.load_test_data
         )
-        test_data_btn.pack(fill=tk.X, pady=(5, 0))
+        test_data_btn.pack(side=tk.RIGHT, fill=tk.X, expand=True, padx=(5, 0))
+
+        # Search options section
+        options_frame = ttk.LabelFrame(
+            scrollable_frame,
+            text="🎯 Search Options",
+            padding="15",
+            style='Modern.TLabelframe'
+        )
+        options_frame.pack(fill=tk.X, pady=(0, 15))
+
+        # Exact matching checkbox
+        self.exact_matching_var = tk.BooleanVar(value=False)
+        exact_matching_checkbox = ttk.Checkbutton(
+            options_frame,
+            text="Require EXACT matching for first names",
+            variable=self.exact_matching_var,
+            style='Modern.TCheckbutton'
+        )
+        exact_matching_checkbox.pack(anchor=tk.W, pady=(0, 5))
+
+        # Explanation label
+        explanation_label = ttk.Label(
+            options_frame,
+            text="(Recommended: OFF for better results)",
+            style='Muted.TLabel',
+            font=ModernStyle.FONTS['small']
+        )
+        explanation_label.pack(anchor=tk.W)
         
-        # Batch search section with enhanced styling
+        # Batch search section
         batch_frame = ttk.LabelFrame(
-            input_frame, 
+            scrollable_frame, 
             text="📁 Batch Search", 
             padding="15",
             style='Modern.TLabelframe'
         )
         batch_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
         
-        # Instructions with better styling
+        # Instructions
         instructions_label = ttk.Label(
             batch_frame, 
-            text="Enter multiple names (one per line or semicolon-separated):",
+            text="Enter names (one per line or semicolon-separated):",
             style='Body.TLabel'
         )
         instructions_label.pack(anchor=tk.W, pady=(0, 8))
         
-        # Enhanced batch input text area
-        self.batch_text = scrolledtext.ScrolledText(
-            batch_frame,
-            height=10,
-            font=ModernStyle.FONTS['body'],
-            borderwidth=1,
-            relief='solid'
-        )
-        self.batch_text.pack(fill=tk.BOTH, expand=True, pady=(0, 12))
+        # Batch input text area
+        text_frame = tk.Frame(batch_frame, bg=ModernStyle.COLORS['surface'])
+        text_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 12))
         
-        # Prepopulate with test data (as requested by user)
+        # Text widget with scrollbar
+        text_scroll = ttk.Scrollbar(text_frame)
+        text_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.batch_text = tk.Text(
+            text_frame,
+            height=8,
+            font=ModernStyle.FONTS['body'],
+            borderwidth=2,
+            relief='solid',
+            bg=ModernStyle.COLORS['input_bg'],
+            fg=ModernStyle.COLORS['text_primary'],
+            insertbackground=ModernStyle.COLORS['text_primary'],
+            selectbackground=ModernStyle.COLORS['primary_light'],
+            selectforeground='white',
+            yscrollcommand=text_scroll.set
+        )
+        self.batch_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        text_scroll.config(command=self.batch_text.yview)
+        
+        # Prepopulate with test data
         test_data = ("Andro Cutuk,1975\n"
                     "Anthony Bek,1993\n"
                     "Ghafoor Jaggi Nadery,1978")
         self.batch_text.insert(tk.END, test_data)
         
-        # Enhanced batch search buttons frame
+        # Batch search buttons
         batch_btn_frame = ttk.Frame(batch_frame)
         batch_btn_frame.pack(fill=tk.X)
         
@@ -618,7 +799,7 @@ class ReadySearchGUI:
             style='Primary.TButton',
             command=self.batch_search
         )
-        batch_search_btn.pack(side=tk.LEFT, padx=(0, 8))
+        batch_search_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         # Clear button
         clear_btn = ttk.Button(
@@ -627,7 +808,7 @@ class ReadySearchGUI:
             style='Secondary.TButton',
             command=self.clear_batch_input
         )
-        clear_btn.pack(side=tk.LEFT, padx=(0, 8))
+        clear_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         # Load file button
         load_file_btn = ttk.Button(
@@ -640,26 +821,31 @@ class ReadySearchGUI:
     
     def create_results_panel(self, parent):
         """Create enhanced results display panel with modern styling"""
-        results_frame = ttk.Frame(parent, style='Card.TFrame')
-        parent.add(results_frame, weight=2)
+        # Create frame for results panel
+        results_frame = tk.Frame(parent, bg=ModernStyle.COLORS['surface'], relief='solid', borderwidth=1)
+        parent.add(results_frame, width=800, minsize=600)
         
-        # Results section title with enhanced styling
-        results_title = ttk.Label(
+        # Results section title
+        results_title = tk.Label(
             results_frame,
             text="📊 Search Results & Export",
-            style='Heading.TLabel'
+            font=ModernStyle.FONTS['heading'],
+            bg=ModernStyle.COLORS['surface'],
+            fg=ModernStyle.COLORS['text_primary']
         )
-        results_title.pack(pady=(20, 15), padx=20)
+        results_title.pack(pady=(15, 10), padx=20)
         
-        # Enhanced results controls frame
-        controls_frame = ttk.Frame(results_frame)
-        controls_frame.pack(fill=tk.X, padx=20, pady=(0, 15))
+        # Controls frame
+        controls_frame = tk.Frame(results_frame, bg=ModernStyle.COLORS['surface'])
+        controls_frame.pack(fill=tk.X, padx=20, pady=(0, 10))
         
-        # Export section label
-        export_label = ttk.Label(
+        # Export section
+        export_label = tk.Label(
             controls_frame,
             text="📤 Export Options:",
-            style='Body.TLabel'
+            font=ModernStyle.FONTS['body'],
+            bg=ModernStyle.COLORS['surface'],
+            fg=ModernStyle.COLORS['text_primary']
         )
         export_label.pack(anchor=tk.W, pady=(0, 8))
         
@@ -667,14 +853,14 @@ class ReadySearchGUI:
         export_frame = ttk.Frame(controls_frame)
         export_frame.pack(fill=tk.X, pady=(0, 10))
         
-        # Enhanced export buttons with better styling
+        # Export buttons
         export_json_btn = ttk.Button(
             export_frame,
             text="📄 JSON (Full Data)",
             style='Success.TButton',
             command=lambda: self.export_results('json')
         )
-        export_json_btn.pack(side=tk.LEFT, padx=(0, 8))
+        export_json_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         export_csv_btn = ttk.Button(
             export_frame,
@@ -682,7 +868,7 @@ class ReadySearchGUI:
             style='Success.TButton',
             command=lambda: self.export_results('csv')
         )
-        export_csv_btn.pack(side=tk.LEFT, padx=(0, 8))
+        export_csv_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         export_txt_btn = ttk.Button(
             export_frame,
@@ -690,33 +876,30 @@ class ReadySearchGUI:
             style='Success.TButton',
             command=lambda: self.export_results('txt')
         )
-        export_txt_btn.pack(side=tk.LEFT, padx=(0, 8))
+        export_txt_btn.pack(side=tk.LEFT, padx=(0, 5))
         
-        # Action buttons frame
-        action_frame = ttk.Frame(controls_frame)
-        action_frame.pack(fill=tk.X)
-        
+        # Clear button on the right
         clear_results_btn = ttk.Button(
-            action_frame,
+            export_frame,
             text="🗑️ Clear All Results",
             style='Danger.TButton',
             command=self.clear_results
         )
         clear_results_btn.pack(side=tk.RIGHT)
         
-        # Results display with enhanced styling
+        # Results display
         self.create_results_display(results_frame)
     
     def create_results_display(self, parent):
         """Create enhanced results display widget with modern styling"""
-        # Create enhanced notebook for different views
+        # Create notebook for different views
         self.results_notebook = ttk.Notebook(parent, style='Modern.TNotebook')
         self.results_notebook.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 20))
         
-        # Enhanced summary tab
+        # Summary tab
         self.create_summary_tab()
         
-        # Enhanced detailed results tab
+        # Detailed results tab
         self.create_detailed_tab()
     
     def create_summary_tab(self):
@@ -724,89 +907,113 @@ class ReadySearchGUI:
         summary_frame = ttk.Frame(self.results_notebook)
         self.results_notebook.add(summary_frame, text="📈 Summary")
         
-        # Enhanced summary tree view with modern styling
+        # Create tree container with proper layout
+        tree_container = tk.Frame(summary_frame, bg=ModernStyle.COLORS['surface'])
+        tree_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        # Create scrollbars first
+        vsb = ttk.Scrollbar(tree_container, orient="vertical")
+        hsb = ttk.Scrollbar(tree_container, orient="horizontal")
+        
+        # Summary tree view
         columns = ('Name', 'Status', 'Matches', 'Duration', 'Category', 'Details')
         self.summary_tree = ttk.Treeview(
-            summary_frame, 
+            tree_container, 
             columns=columns, 
             show='headings', 
-            height=16,
-            style='Modern.Treeview'
+            height=20,
+            style='Modern.Treeview',
+            yscrollcommand=vsb.set,
+            xscrollcommand=hsb.set
         )
         
-        # Configure enhanced columns with better headers
+        # Configure scrollbars
+        vsb.config(command=self.summary_tree.yview)
+        hsb.config(command=self.summary_tree.xview)
+        
+        # Configure columns with better sizing
         self.summary_tree.heading('Name', text='👤 Name')
         self.summary_tree.heading('Status', text='📊 Status')
         self.summary_tree.heading('Matches', text='🔍 Matches')
-        self.summary_tree.heading('Duration', text='⏱️ Duration (s)')
+        self.summary_tree.heading('Duration', text='⏱️ Duration')
         self.summary_tree.heading('Category', text='📋 Category')
-        self.summary_tree.heading('Details', text='🗂️ Details')
+        self.summary_tree.heading('Details', text='📄 Details')
         
-        # Enhanced column sizing
-        self.summary_tree.column('Name', width=180, minwidth=120)
-        self.summary_tree.column('Status', width=100, minwidth=80)
-        self.summary_tree.column('Matches', width=80, minwidth=60)
+        # Column widths
+        self.summary_tree.column('Name', width=200, minwidth=150)
+        self.summary_tree.column('Status', width=120, minwidth=80)
+        self.summary_tree.column('Matches', width=100, minwidth=60)
         self.summary_tree.column('Duration', width=100, minwidth=80)
-        self.summary_tree.column('Category', width=130, minwidth=100)
-        self.summary_tree.column('Details', width=150, minwidth=120)
+        self.summary_tree.column('Category', width=150, minwidth=100)
+        self.summary_tree.column('Details', width=180, minwidth=120)
         
-        # Create scrollable container
-        tree_container = ttk.Frame(summary_frame)
-        tree_container.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        # Layout using grid for better control
+        self.summary_tree.grid(row=0, column=0, sticky='nsew')
+        vsb.grid(row=0, column=1, sticky='ns')
+        hsb.grid(row=1, column=0, sticky='ew')
         
-        # Enhanced scrollbars with pack geometry manager
-        summary_scroll_y = ttk.Scrollbar(tree_container, orient=tk.VERTICAL, command=self.summary_tree.yview)
-        summary_scroll_x = ttk.Scrollbar(tree_container, orient=tk.HORIZONTAL, command=self.summary_tree.xview)
-        self.summary_tree.configure(yscrollcommand=summary_scroll_y.set, xscrollcommand=summary_scroll_x.set)
-        
-        # Pack tree and scrollbars using pack geometry manager consistently
-        summary_scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
-        summary_scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
-        self.summary_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        # Configure grid weights
+        tree_container.grid_rowconfigure(0, weight=1)
+        tree_container.grid_columnconfigure(0, weight=1)
     
     def create_detailed_tab(self):
         """Create enhanced detailed results tab with modern styling"""
         detailed_frame = ttk.Frame(self.results_notebook)
         self.results_notebook.add(detailed_frame, text="🔍 Detailed")
         
-        # Enhanced detailed results text area with modern styling
-        self.detailed_text = scrolledtext.ScrolledText(
-            detailed_frame,
+        # Text widget with scrollbar
+        text_frame = tk.Frame(detailed_frame, bg=ModernStyle.COLORS['surface'])
+        text_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        # Scrollbar
+        text_scroll = ttk.Scrollbar(text_frame)
+        text_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Detailed results text area
+        self.detailed_text = tk.Text(
+            text_frame,
             font=ModernStyle.FONTS['code'],
             wrap=tk.WORD,
-            borderwidth=1,
+            borderwidth=2,
             relief='solid',
             bg=ModernStyle.COLORS['surface'],
             fg=ModernStyle.COLORS['text_primary'],
             selectbackground=ModernStyle.COLORS['primary_light'],
-            selectforeground='white'
+            selectforeground='white',
+            yscrollcommand=text_scroll.set
         )
-        self.detailed_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        self.detailed_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        text_scroll.config(command=self.detailed_text.yview)
     
     def create_status_bar(self):
         """Create enhanced status bar with modern styling"""
-        status_frame = ttk.Frame(self.root, style='Sidebar.TFrame')
+        status_frame = tk.Frame(self.root, bg=ModernStyle.COLORS['surface_alt'], height=40, relief='solid', borderwidth=1)
         status_frame.pack(fill=tk.X, side=tk.BOTTOM)
+        status_frame.pack_propagate(False)
         
-        # Status with emoji and better formatting
+        # Status label
         self.status_var = tk.StringVar()
         self.status_var.set("✅ Ready for searches")
         
-        status_label = ttk.Label(
+        status_label = tk.Label(
             status_frame,
             textvariable=self.status_var,
-            style='Body.TLabel'
+            font=ModernStyle.FONTS['body'],
+            bg=ModernStyle.COLORS['surface_alt'],
+            fg=ModernStyle.COLORS['text_primary']
         )
         status_label.pack(side=tk.LEFT, padx=15, pady=8)
         
-        # Enhanced results count with emoji
+        # Results count
         self.results_count_var = tk.StringVar()
         self.results_count_var.set("📊 Results: 0")
         
-        results_count_label = ttk.Label(
+        results_count_label = tk.Label(
             status_frame,
             textvariable=self.results_count_var,
-            style='Body.TLabel'
+            font=ModernStyle.FONTS['body'],
+            bg=ModernStyle.COLORS['surface_alt'],
+            fg=ModernStyle.COLORS['text_primary']
         )
         results_count_label.pack(side=tk.RIGHT, padx=15, pady=8)
     
@@ -874,8 +1081,9 @@ class ReadySearchGUI:
                 messagebox.showerror("Error", "Birth year must be a number.")
                 return
         
-        # Create search record
+        # Create search record with exact matching preference
         search_record = SearchRecord(name=name, birth_year=birth_year)
+        search_record.exact_matching = self.exact_matching_var.get()
         
         # Perform search in thread
         self.perform_search_threaded([search_record])
@@ -898,6 +1106,11 @@ class ReadySearchGUI:
         if not search_records:
             messagebox.showerror("Error", "No valid names found in input.")
             return
+        
+        # Apply exact matching preference to all records
+        exact_matching = self.exact_matching_var.get()
+        for record in search_records:
+            record.exact_matching = exact_matching
         
         # Confirm batch search
         if len(search_records) > 5:
@@ -1007,10 +1220,13 @@ class ReadySearchGUI:
         
         # Update enhanced summary tree with additional details column
         for result in new_results:
-            # Format details column
-            details = f"{result.exact_matches} exact"
-            if result.partial_matches > 0:
-                details += f", {result.partial_matches} partial"
+            # Format details column (fixed: show only exact if exact matches exist)
+            if result.exact_matches > 0:
+                details = f"{result.exact_matches} exact"
+            elif result.partial_matches > 0:
+                details = f"{result.partial_matches} partial"
+            else:
+                details = "No matches"
             
             self.summary_tree.insert('', tk.END, values=(
                 result.name,
