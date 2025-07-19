@@ -44,6 +44,7 @@ class GUISearchResult:
     timestamp: str
     birth_year: Optional[int] = None
     error: Optional[str] = None
+    total_results_found: Optional[int] = None
 
 class ModernStyle:
     """Professional modern styling configuration for the GUI with better contrast"""
@@ -387,127 +388,6 @@ class ModernStyle:
             'insert_bg': cls.COLORS['text_primary']
         }
 
-class SearchProgressWindow:
-    """Enhanced progress window for search operations with modern styling"""
-    
-    def __init__(self, parent, total_searches):
-        self.window = tk.Toplevel(parent)
-        self.window.title("ReadySearch - Search in Progress")
-        self.window.geometry("600x400")
-        self.window.transient(parent)
-        self.window.grab_set()
-        self.window.configure(bg=ModernStyle.COLORS['background'])
-        
-        # Center the window
-        self.window.geometry("+%d+%d" % (
-            parent.winfo_rootx() + 100,
-            parent.winfo_rooty() + 100
-        ))
-        
-        # Make window non-resizable for cleaner appearance
-        self.window.resizable(False, False)
-        
-        self.total_searches = total_searches
-        self.current_search = 0
-        
-        self.setup_ui()
-    
-    def setup_ui(self):
-        """Setup enhanced progress window UI with modern styling"""
-        # Main container with modern styling
-        main_frame = ttk.Frame(self.window, style='Card.TFrame', padding="25")
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        
-        # Enhanced title with modern header
-        header_frame = ttk.Frame(main_frame, style='Header.TFrame')
-        header_frame.pack(fill=tk.X, pady=(0, 20))
-        
-        title_label = ttk.Label(
-            header_frame,
-            text="🔍 ReadySearch - Processing Searches",
-            style='Title.TLabel'
-        )
-        title_label.pack(pady=15)
-        
-        # Progress section with better visual hierarchy
-        progress_frame = ttk.Frame(main_frame)
-        progress_frame.pack(fill=tk.X, pady=(0, 20))
-        
-        # Enhanced progress bar with custom styling
-        self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(
-            progress_frame,
-            variable=self.progress_var,
-            maximum=100,
-            length=500,
-            mode='determinate'
-        )
-        self.progress_bar.pack(pady=(0, 15))
-        
-        # Enhanced status information
-        self.status_label = ttk.Label(
-            progress_frame,
-            text="⏳ Preparing search automation...",
-            style='Heading.TLabel'
-        )
-        self.status_label.pack(pady=(0, 10))
-        
-        # Current search info with better styling
-        self.search_info_label = ttk.Label(
-            progress_frame,
-            text="",
-            style='Body.TLabel'
-        )
-        self.search_info_label.pack(pady=(0, 15))
-        
-        # Enhanced results section
-        results_label = ttk.Label(
-            main_frame,
-            text="📊 Live Search Results:",
-            style='Heading.TLabel'
-        )
-        results_label.pack(anchor=tk.W, pady=(0, 8))
-        
-        # Enhanced results text area with modern styling
-        self.results_text = scrolledtext.ScrolledText(
-            main_frame,
-            height=10,
-            width=70,
-            font=ModernStyle.FONTS['code'],
-            borderwidth=1,
-            relief='solid',
-            bg=ModernStyle.COLORS['surface'],
-            fg=ModernStyle.COLORS['text_primary'],
-            selectbackground=ModernStyle.COLORS['primary_light'],
-            selectforeground='white'
-        )
-        self.results_text.pack(fill=tk.BOTH, expand=True)
-    
-    def update_progress(self, current, total, current_name="", status=""):
-        """Update enhanced progress display with visual feedback"""
-        self.current_search = current
-        progress_percent = (current / total) * 100
-        self.progress_var.set(progress_percent)
-        
-        # Enhanced status with emoji and better formatting
-        enhanced_status = f"🔍 {status}" if status else "🔍 Processing..."
-        self.status_label.config(text=enhanced_status)
-        
-        # Enhanced search info with better visual hierarchy
-        search_info = f"📋 Search {current} of {total}: 👤 {current_name}" if current_name else f"📋 Search {current} of {total}"
-        self.search_info_label.config(text=search_info)
-        
-        self.window.update()
-    
-    def add_result_text(self, text):
-        """Add text to results area"""
-        self.results_text.insert(tk.END, text + "\n")
-        self.results_text.see(tk.END)
-        self.window.update()
-    
-    def close(self):
-        """Close the progress window"""
-        self.window.destroy()
 
 class ReadySearchGUI:
     """Main GUI application class"""
@@ -524,18 +404,18 @@ class ReadySearchGUI:
         
     def setup_main_window(self):
         """Setup main window configuration with responsive sizing"""
-        self.root.title("ReadySearch Advanced GUI v2.0")
+        self.root.title("ReadySearch Advanced GUI v2.2")
         
         # Get screen dimensions for responsive sizing
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         
-        # Calculate responsive window size (90% of screen, max 1400x900)
-        window_width = min(int(screen_width * 0.9), 1400)
-        window_height = min(int(screen_height * 0.85), 900)
+        # Calculate responsive window size (95% of screen, min 1600x1000)
+        window_width = max(int(screen_width * 0.95), 1600)
+        window_height = max(int(screen_height * 0.9), 1000)
         
-        # Set minimum size to ensure usability
-        self.root.minsize(1000, 700)
+        # Set minimum size to ensure usability and prevent cutoffs
+        self.root.minsize(1600, 1000)
         
         # Center window on screen with responsive sizing
         self.root.update_idletasks()
@@ -589,7 +469,7 @@ class ReadySearchGUI:
         # Title with larger font and better spacing
         title_label = tk.Label(
             inner_frame,
-            text="🔍 ReadySearch Advanced GUI v2.0",
+            text="🔍 ReadySearch Advanced GUI v2.2",
             font=ModernStyle.FONTS['title'],
             bg=ModernStyle.COLORS['header_bg'],
             fg=ModernStyle.COLORS['text_white']
@@ -607,27 +487,116 @@ class ReadySearchGUI:
         subtitle_label.pack(pady=(0, 25))
     
     def create_main_content(self):
-        """Create enhanced main content area with modern styling"""
+        """Create enhanced main content area with modern styling and integrated progress"""
         # Main container with padding
         main_container = tk.Frame(self.root, bg=ModernStyle.COLORS['background'])
         main_container.pack(fill=tk.BOTH, expand=True, padx=0, pady=0)
         
+        # Create top section for main panels
+        top_section = tk.Frame(main_container, bg=ModernStyle.COLORS['background'])
+        top_section.pack(fill=tk.BOTH, expand=True, padx=10, pady=(10, 5))
+        
         # Create paned window for resizable sections
         self.paned_window = tk.PanedWindow(
-            main_container, 
+            top_section, 
             orient=tk.HORIZONTAL,
             bg=ModernStyle.COLORS['background'],
             sashwidth=8,
             sashrelief='flat',
             borderwidth=0
         )
-        self.paned_window.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        self.paned_window.pack(fill=tk.BOTH, expand=True)
         
         # Left panel - Search input (narrower)
         self.create_search_panel(self.paned_window)
         
         # Right panel - Results display (wider)
         self.create_results_panel(self.paned_window)
+        
+        # Bottom section - Integrated progress display
+        self.create_progress_section(main_container)
+    
+    def create_progress_section(self, parent):
+        """Create integrated progress display section"""
+        # Progress frame (initially hidden)
+        self.progress_frame = tk.Frame(parent, bg=ModernStyle.COLORS['surface_alt'], relief='solid', borderwidth=1)
+        self.progress_frame.pack(fill=tk.X, padx=10, pady=(5, 10))
+        self.progress_frame.pack_forget()  # Initially hidden
+        
+        # Progress header
+        progress_header = tk.Label(
+            self.progress_frame,
+            text="🔍 Search Progress",
+            font=ModernStyle.FONTS['heading'],
+            bg=ModernStyle.COLORS['surface_alt'],
+            fg=ModernStyle.COLORS['text_primary']
+        )
+        progress_header.pack(pady=(10, 5))
+        
+        # Progress bar container
+        progress_container = tk.Frame(self.progress_frame, bg=ModernStyle.COLORS['surface_alt'])
+        progress_container.pack(fill=tk.X, padx=20, pady=(0, 10))
+        
+        # Progress bar
+        self.progress_var = tk.DoubleVar()
+        self.progress_bar = ttk.Progressbar(
+            progress_container,
+            variable=self.progress_var,
+            maximum=100,
+            length=400,
+            mode='determinate'
+        )
+        self.progress_bar.pack(pady=(0, 8))
+        
+        # Progress status
+        self.progress_status_var = tk.StringVar()
+        self.progress_status_var.set("⏳ Preparing search...")
+        self.progress_status_label = tk.Label(
+            progress_container,
+            textvariable=self.progress_status_var,
+            font=ModernStyle.FONTS['body'],
+            bg=ModernStyle.COLORS['surface_alt'],
+            fg=ModernStyle.COLORS['text_primary']
+        )
+        self.progress_status_label.pack(pady=(0, 5))
+        
+        # Current search info
+        self.current_search_var = tk.StringVar()
+        self.current_search_label = tk.Label(
+            progress_container,
+            textvariable=self.current_search_var,
+            font=ModernStyle.FONTS['small'],
+            bg=ModernStyle.COLORS['surface_alt'],
+            fg=ModernStyle.COLORS['text_secondary']
+        )
+        self.current_search_label.pack()
+    
+    def show_progress(self):
+        """Show the integrated progress section"""
+        self.progress_frame.pack(fill=tk.X, padx=10, pady=(5, 10))
+        
+    def hide_progress(self):
+        """Hide the integrated progress section"""
+        self.progress_frame.pack_forget()
+        
+    def update_progress(self, current, total, current_name="", status=""):
+        """Update the integrated progress display"""
+        progress_percent = (current / total) * 100 if total > 0 else 0
+        self.progress_var.set(progress_percent)
+        
+        # Update status
+        if status:
+            self.progress_status_var.set(f"🔍 {status}")
+        else:
+            self.progress_status_var.set("🔍 Processing...")
+        
+        # Update current search info
+        if current_name:
+            self.current_search_var.set(f"📋 Search {current} of {total}: 👤 {current_name}")
+        else:
+            self.current_search_var.set(f"📋 Search {current} of {total}")
+        
+        self.root.update()
     
     def create_search_panel(self, parent):
         """Create enhanced search input panel with modern styling"""
@@ -853,9 +822,12 @@ class ReadySearchGUI:
         export_frame = ttk.Frame(controls_frame)
         export_frame.pack(fill=tk.X, pady=(0, 10))
         
-        # Export buttons
+        # Export buttons - first row
+        export_row1 = ttk.Frame(export_frame)
+        export_row1.pack(fill=tk.X, pady=(0, 5))
+        
         export_json_btn = ttk.Button(
-            export_frame,
+            export_row1,
             text="📄 JSON (Full Data)",
             style='Success.TButton',
             command=lambda: self.export_results('json')
@@ -863,7 +835,7 @@ class ReadySearchGUI:
         export_json_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         export_csv_btn = ttk.Button(
-            export_frame,
+            export_row1,
             text="📊 CSV (Spreadsheet)",
             style='Success.TButton',
             command=lambda: self.export_results('csv')
@@ -871,12 +843,32 @@ class ReadySearchGUI:
         export_csv_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         export_txt_btn = ttk.Button(
-            export_frame,
+            export_row1,
             text="📝 TXT (Report)",
             style='Success.TButton',
             command=lambda: self.export_results('txt')
         )
         export_txt_btn.pack(side=tk.LEFT, padx=(0, 5))
+        
+        # Export buttons - second row for comprehensive exports
+        export_row2 = ttk.Frame(export_frame)
+        export_row2.pack(fill=tk.X, pady=(0, 5))
+        
+        export_all_json_btn = ttk.Button(
+            export_row2,
+            text="🗂️ Export All Data (JSON)",
+            style='Secondary.TButton',
+            command=lambda: self.export_all_results('json')
+        )
+        export_all_json_btn.pack(side=tk.LEFT, padx=(0, 5))
+        
+        export_all_csv_btn = ttk.Button(
+            export_row2,
+            text="📋 Export All Data (CSV)",
+            style='Secondary.TButton',
+            command=lambda: self.export_all_results('csv')
+        )
+        export_all_csv_btn.pack(side=tk.LEFT, padx=(0, 5))
         
         # Clear button on the right
         clear_results_btn = ttk.Button(
@@ -1149,24 +1141,24 @@ class ReadySearchGUI:
         return search_records
     
     def perform_search_threaded(self, search_records: List[SearchRecord]):
-        """Perform search in a separate thread"""
+        """Perform search in a separate thread with integrated progress display"""
         def search_thread():
             try:
-                # Show progress window
-                progress_window = SearchProgressWindow(self.root, len(search_records))
+                # Show integrated progress display
+                self.root.after(0, self.show_progress)
                 
                 # Update status with enhanced visual feedback
-                self.status_var.set("🔍 Searching in progress...")
-                self.root.update()
+                self.root.after(0, lambda: self.status_var.set("🔍 Searching in progress..."))
                 
                 # Perform searches
                 results = []
                 for i, search_record in enumerate(search_records):
-                    progress_window.update_progress(
+                    # Update integrated progress
+                    self.root.after(0, lambda i=i, name=search_record.name: self.update_progress(
                         i + 1, len(search_records),
-                        search_record.name,
-                        f"Searching for {search_record.name}..."
-                    )
+                        name,
+                        f"Searching for {name}..."
+                    ))
                     
                     # Run async search
                     loop = asyncio.new_event_loop()
@@ -1189,24 +1181,25 @@ class ReadySearchGUI:
                         detailed_results=search_result['detailed_results'],
                         timestamp=datetime.now().isoformat(),
                         birth_year=search_record.birth_year,
-                        error=search_result.get('error')
+                        error=search_result.get('error'),
+                        total_results_found=search_result.get('total_results_found', search_result['matches_found'])
                     )
                     
                     results.append(gui_result)
                     
-                    # Update progress window
+                    # Update progress status
                     status_icon = "✅" if gui_result.matches_found > 0 else "⭕" if gui_result.status != 'Error' else "❌"
-                    progress_window.add_result_text(
-                        f"{status_icon} {gui_result.name}: {gui_result.status} "
-                        f"({gui_result.matches_found} matches, {gui_result.search_duration:.2f}s)"
-                    )
+                    status_text = f"Completed {gui_result.name}: {gui_result.status} ({gui_result.matches_found} matches)"
+                    self.root.after(0, lambda text=status_text: self.progress_status_var.set(text))
                 
-                progress_window.close()
+                # Hide progress display
+                self.root.after(0, self.hide_progress)
                 
                 # Update results in main thread
                 self.root.after(0, lambda: self.update_results_display(results))
                 
             except Exception as e:
+                self.root.after(0, self.hide_progress)
                 self.root.after(0, lambda: messagebox.showerror("Search Error", str(e)))
                 self.root.after(0, lambda: self.status_var.set("❌ Search failed - Ready for new search"))
         
@@ -1218,15 +1211,18 @@ class ReadySearchGUI:
         # Add to results list
         self.search_results.extend(new_results)
         
-        # Update enhanced summary tree with additional details column
+        # Update enhanced summary tree with total results count format
         for result in new_results:
-            # Format details column (fixed: show only exact if exact matches exist)
-            if result.exact_matches > 0:
-                details = f"{result.exact_matches} exact"
+            # Format details column with "X matched out of Y total" format
+            total_found = result.total_results_found or result.matches_found
+            if result.exact_matches > 0 and result.partial_matches > 0:
+                details = f"{result.exact_matches} exact, {result.partial_matches} partial out of {total_found} total"
+            elif result.exact_matches > 0:
+                details = f"{result.exact_matches} exact out of {total_found} total"
             elif result.partial_matches > 0:
-                details = f"{result.partial_matches} partial"
+                details = f"{result.partial_matches} partial out of {total_found} total"
             else:
-                details = "No matches"
+                details = f"0 matched out of {total_found} total"
             
             self.summary_tree.insert('', tk.END, values=(
                 result.name,
@@ -1244,14 +1240,7 @@ class ReadySearchGUI:
         self.status_var.set("✅ Search completed successfully")
         self.results_count_var.set(f"📊 Results: {len(self.search_results)}")
         
-        # Show completion message
-        matches = len([r for r in new_results if r.matches_found > 0])
-        messagebox.showinfo(
-            "Search Complete",
-            f"Completed {len(new_results)} searches.\n"
-            f"Found matches: {matches}\n"
-            f"No matches: {len(new_results) - matches}"
-        )
+        # No completion popup - user requested this to be removed
     
     def update_detailed_view(self):
         """Update detailed results view"""
@@ -1296,10 +1285,26 @@ class ReadySearchGUI:
             
             if result.detailed_results:
                 self.detailed_text.insert(tk.END, "   Detailed Matches:\n")
-                for match in result.detailed_results[:5]:  # Show first 5
-                    self.detailed_text.insert(tk.END, f"     • {match['matched_name']} ({match['match_type']})\n")
-                if len(result.detailed_results) > 5:
-                    self.detailed_text.insert(tk.END, f"     ... and {len(result.detailed_results) - 5} more\n")
+                # Show ALL results - no more ellipsis truncation
+                for j, match in enumerate(result.detailed_results, 1):
+                    matched_name = match.get('matched_name', 'Unknown')
+                    match_type = match.get('match_type', 'Unknown')
+                    birth_date = match.get('date_of_birth', match.get('birth_date', 'Unknown'))
+                    location_info = []
+                    
+                    # Extract location data
+                    for loc_field in ['address', 'location', 'city', 'suburb', 'state', 'postcode']:
+                        if loc_field in match and match[loc_field]:
+                            location_info.append(match[loc_field])
+                    
+                    location_str = ', '.join(location_info) if location_info else 'Location Unknown'
+                    
+                    self.detailed_text.insert(tk.END, f"     {j}. {matched_name} ({match_type})\n")
+                    if birth_date != 'Unknown':
+                        self.detailed_text.insert(tk.END, f"        Date of Birth: {birth_date}\n")
+                    if location_str != 'Location Unknown':
+                        self.detailed_text.insert(tk.END, f"        Location: {location_str}\n")
+                    self.detailed_text.insert(tk.END, "\n")
             
             if result.error:
                 self.detailed_text.insert(tk.END, f"   Error: {result.error}\n")
@@ -1307,32 +1312,46 @@ class ReadySearchGUI:
             self.detailed_text.insert(tk.END, "\n")
     
     def export_results(self, format_type: str):
-        """Export results in specified format"""
+        """Export results in specified format with enhanced error handling"""
         if not self.search_results:
             messagebox.showwarning("No Data", "No search results to export.")
             return
         
-        # Get filename from user
+        # Get filename from user with better default path
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         default_filename = f"readysearch_results_{timestamp}"
         
+        # Set initial directory to user's Desktop or Documents
+        try:
+            initial_dir = str(Path.home() / "Desktop")
+            if not Path(initial_dir).exists():
+                initial_dir = str(Path.home() / "Documents")
+        except:
+            initial_dir = str(Path.cwd())
+        
         if format_type == 'json':
             filename = filedialog.asksaveasfilename(
+                title="Export Results as JSON",
                 defaultextension=".json",
                 filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
-                initialvalue=f"{default_filename}.json"
+                initialvalue=f"{default_filename}.json",
+                initialdir=initial_dir
             )
         elif format_type == 'csv':
             filename = filedialog.asksaveasfilename(
+                title="Export Results as CSV",
                 defaultextension=".csv",
                 filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
-                initialvalue=f"{default_filename}.csv"
+                initialvalue=f"{default_filename}.csv",
+                initialdir=initial_dir
             )
         elif format_type == 'txt':
             filename = filedialog.asksaveasfilename(
+                title="Export Results as TXT",
                 defaultextension=".txt",
                 filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
-                initialvalue=f"{default_filename}.txt"
+                initialvalue=f"{default_filename}.txt",
+                initialdir=initial_dir
             )
         else:
             messagebox.showerror("Error", f"Unsupported format: {format_type}")
@@ -1342,6 +1361,13 @@ class ReadySearchGUI:
             return
         
         try:
+            # Ensure directory exists
+            Path(filename).parent.mkdir(parents=True, exist_ok=True)
+            
+            # Update status
+            self.status_var.set(f"📤 Exporting {format_type.upper()} file...")
+            self.root.update()
+            
             if format_type == 'json':
                 self.export_json(filename)
             elif format_type == 'csv':
@@ -1349,14 +1375,317 @@ class ReadySearchGUI:
             elif format_type == 'txt':
                 self.export_txt(filename)
             
-            messagebox.showinfo("Export Complete", f"Results exported successfully to:\n{filename}")
+            # Verify file was created
+            if Path(filename).exists():
+                file_size = Path(filename).stat().st_size
+                self.status_var.set(f"✅ Export complete - {file_size} bytes written")
+                
+                messagebox.showinfo("Export Complete", 
+                    f"Results exported successfully!\n\n"
+                    f"File: {filename}\n"
+                    f"Size: {file_size:,} bytes\n"
+                    f"Records: {len(self.search_results)}")
+                
+                # Ask if user wants to open the file
+                if messagebox.askyesno("Open File", "Would you like to open the exported file?"):
+                    try:
+                        import os
+                        os.startfile(filename)  # Windows-specific
+                    except:
+                        webbrowser.open(f"file://{filename}")
+            else:
+                messagebox.showerror("Export Error", "File was not created successfully.")
+                
+        except PermissionError as e:
+            messagebox.showerror("Permission Error", 
+                f"Cannot write to the selected location.\n"
+                f"Please choose a different folder or run as administrator.\n\n"
+                f"Error: {str(e)}")
+        except Exception as e:
+            messagebox.showerror("Export Error", 
+                f"Failed to export results:\n\n"
+                f"Error: {str(e)}\n"
+                f"File: {filename if 'filename' in locals() else 'Unknown'}")
+            self.status_var.set("❌ Export failed")
+    
+    def export_all_results(self, format_type: str):
+        """Export comprehensive results including both matched and unmatched for detailed analysis"""
+        if not self.search_results:
+            messagebox.showwarning("No Data", "No search results to export.")
+            return
+        
+        # Get filename from user with enhanced naming
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        default_filename = f"readysearch_comprehensive_analysis_{timestamp}"
+        
+        # Set initial directory
+        try:
+            initial_dir = str(Path.home() / "Desktop")
+            if not Path(initial_dir).exists():
+                initial_dir = str(Path.home() / "Documents")
+        except:
+            initial_dir = str(Path.cwd())
+        
+        if format_type == 'json':
+            filename = filedialog.asksaveasfilename(
+                title="Export Comprehensive Analysis as JSON",
+                defaultextension=".json",
+                filetypes=[("JSON files", "*.json"), ("All files", "*.*")],
+                initialvalue=f"{default_filename}.json",
+                initialdir=initial_dir
+            )
+        elif format_type == 'csv':
+            filename = filedialog.asksaveasfilename(
+                title="Export Comprehensive Analysis as CSV",
+                defaultextension=".csv",
+                filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                initialvalue=f"{default_filename}.csv",
+                initialdir=initial_dir
+            )
+        else:
+            messagebox.showerror("Error", f"Unsupported format: {format_type}")
+            return
+        
+        if not filename:
+            return
+        
+        try:
+            # Ensure directory exists
+            Path(filename).parent.mkdir(parents=True, exist_ok=True)
             
-            # Ask if user wants to open the file
-            if messagebox.askyesno("Open File", "Would you like to open the exported file?"):
-                webbrowser.open(filename)
+            # Update status
+            self.status_var.set(f"📤 Exporting comprehensive {format_type.upper()} analysis...")
+            self.root.update()
+            
+            if format_type == 'json':
+                self.export_comprehensive_json(filename)
+            elif format_type == 'csv':
+                self.export_comprehensive_csv(filename)
+            
+            # Verify file was created
+            if Path(filename).exists():
+                file_size = Path(filename).stat().st_size
+                self.status_var.set(f"✅ Comprehensive export complete - {file_size} bytes written")
+                
+                messagebox.showinfo("Comprehensive Export Complete", 
+                    f"Comprehensive analysis exported successfully!\n\n"
+                    f"File: {filename}\n"
+                    f"Size: {file_size:,} bytes\n"
+                    f"Records: {len(self.search_results)}\n"
+                    f"Includes: All matched AND unmatched results for detailed analysis")
+                
+                # Ask if user wants to open the file
+                if messagebox.askyesno("Open File", "Would you like to open the exported analysis file?"):
+                    try:
+                        import os
+                        os.startfile(filename)  # Windows-specific
+                    except:
+                        webbrowser.open(f"file://{filename}")
+            else:
+                messagebox.showerror("Export Error", "File was not created successfully.")
                 
         except Exception as e:
-            messagebox.showerror("Export Error", f"Failed to export results:\n{str(e)}")
+            messagebox.showerror("Export Error", 
+                f"Failed to export comprehensive analysis:\n\n"
+                f"Error: {str(e)}\n"
+                f"File: {filename if 'filename' in locals() else 'Unknown'}")
+            self.status_var.set("❌ Comprehensive export failed")
+    
+    def export_comprehensive_json(self, filename: str):
+        """Export comprehensive JSON analysis including all matched and unmatched results"""
+        # Enhanced analysis data structure
+        total_searches = len(self.search_results)
+        matched_results = [r for r in self.search_results if r.matches_found > 0]
+        unmatched_results = [r for r in self.search_results if r.matches_found == 0 and r.status != 'Error']
+        error_results = [r for r in self.search_results if r.status == 'Error']
+        
+        data = {
+            'comprehensive_analysis': {
+                'export_info': {
+                    'timestamp': datetime.now().isoformat(),
+                    'tool_version': 'ReadySearch Advanced GUI v2.2 Comprehensive',
+                    'export_type': 'Complete Analysis - Matched AND Unmatched Results',
+                    'analysis_scope': 'All search results with detailed breakdown'
+                },
+                'summary_statistics': {
+                    'total_searches_performed': total_searches,
+                    'matched_results_count': len(matched_results),
+                    'unmatched_results_count': len(unmatched_results),
+                    'error_results_count': len(error_results),
+                    'success_rate_percentage': f"{((len(matched_results) + len(unmatched_results))/total_searches*100):.1f}%" if total_searches > 0 else "0%",
+                    'average_search_duration': f"{sum(r.search_duration for r in self.search_results) / total_searches:.2f}s" if total_searches > 0 else "0s",
+                    'total_matches_found': sum(r.matches_found for r in self.search_results),
+                    'total_exact_matches': sum(r.exact_matches for r in self.search_results),
+                    'total_partial_matches': sum(r.partial_matches for r in self.search_results)
+                }
+            },
+            'matched_results': [],
+            'unmatched_results': [],
+            'error_results': []
+        }
+        
+        # Process matched results with full details
+        for r in matched_results:
+            result_data = {
+                'search_info': {
+                    'name': r.name,
+                    'birth_year': r.birth_year,
+                    'search_timestamp': r.timestamp,
+                    'search_duration_seconds': r.search_duration
+                },
+                'match_summary': {
+                    'status': r.status,
+                    'total_results_found': r.total_results_found or r.matches_found,
+                    'exact_matches': r.exact_matches,
+                    'partial_matches': r.partial_matches,
+                    'match_category': r.match_category,
+                    'match_reasoning': r.match_reasoning
+                },
+                'detailed_matches': []
+            }
+            
+            # Include ALL detailed results
+            if r.detailed_results:
+                for i, match in enumerate(r.detailed_results, 1):
+                    detailed_match = {
+                        'match_number': i,
+                        'matched_name': match.get('matched_name', 'Unknown'),
+                        'match_type': match.get('match_type', 'Unknown'),
+                        'confidence': match.get('confidence', 0.0),
+                        'date_of_birth': match.get('date_of_birth', match.get('birth_date', 'Unknown')),
+                        'location_data': {
+                            'address': match.get('address', ''),
+                            'city': match.get('city', match.get('suburb', '')),
+                            'state': match.get('state', ''),
+                            'postcode': match.get('postcode', ''),
+                            'full_location': ', '.join([v for v in [
+                                match.get('address', ''),
+                                match.get('city', match.get('suburb', '')),
+                                match.get('state', ''),
+                                match.get('postcode', '')
+                            ] if v])
+                        },
+                        'additional_details': {k: v for k, v in match.items() 
+                                              if k not in ['matched_name', 'match_type', 'confidence', 'date_of_birth', 'birth_date', 'address', 'city', 'suburb', 'state', 'postcode']}
+                    }
+                    result_data['detailed_matches'].append(detailed_match)
+            
+            data['matched_results'].append(result_data)
+        
+        # Process unmatched results for analysis
+        for r in unmatched_results:
+            unmatched_data = {
+                'search_info': {
+                    'name': r.name,
+                    'birth_year': r.birth_year,
+                    'search_timestamp': r.timestamp,
+                    'search_duration_seconds': r.search_duration
+                },
+                'analysis_info': {
+                    'status': r.status,
+                    'total_results_searched': r.total_results_found or 0,
+                    'exact_matches': r.exact_matches,
+                    'partial_matches': r.partial_matches,
+                    'match_category': r.match_category,
+                    'match_reasoning': r.match_reasoning,
+                    'no_match_analysis': 'Name not found in database search results'
+                }
+            }
+            data['unmatched_results'].append(unmatched_data)
+        
+        # Process error results
+        for r in error_results:
+            error_data = {
+                'search_info': {
+                    'name': r.name,
+                    'birth_year': r.birth_year,
+                    'search_timestamp': r.timestamp,
+                    'search_duration_seconds': r.search_duration
+                },
+                'error_info': {
+                    'status': r.status,
+                    'error_message': r.error or 'Unknown error',
+                    'match_category': r.match_category
+                }
+            }
+            data['error_results'].append(error_data)
+        
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    def export_comprehensive_csv(self, filename: str):
+        """Export comprehensive CSV analysis with all results separated by type"""
+        with open(filename, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            
+            # Write header with comprehensive information
+            writer.writerow(['READYSEARCH COMPREHENSIVE ANALYSIS - ALL RESULTS'])
+            writer.writerow([f'Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'])
+            writer.writerow([f'Tool: ReadySearch Advanced GUI v2.2'])
+            writer.writerow([f'Total Searches: {len(self.search_results)}'])
+            writer.writerow([])
+            
+            # Section 1: MATCHED RESULTS
+            matched_results = [r for r in self.search_results if r.matches_found > 0]
+            if matched_results:
+                writer.writerow(['=== MATCHED RESULTS ==='])
+                writer.writerow([
+                    'Search_Name', 'Birth_Year', 'Status', 'Duration_Seconds', 
+                    'Total_Results_Found', 'Exact_Matches', 'Partial_Matches',
+                    'Match_Category', 'Match_Number', 'Matched_Name', 'Match_Type',
+                    'Date_of_Birth', 'Location_Full', 'Location_Address', 'Location_City',
+                    'Location_State', 'Location_Postcode', 'Additional_Details'
+                ])
+                
+                for result in matched_results:
+                    if result.detailed_results:
+                        for i, match in enumerate(result.detailed_results, 1):
+                            location_parts = []
+                            for loc_field in ['address', 'city', 'suburb', 'state', 'postcode']:
+                                if loc_field in match and match[loc_field]:
+                                    location_parts.append(match[loc_field])
+                            location_full = ', '.join(location_parts)
+                            
+                            writer.writerow([
+                                result.name, result.birth_year or '', result.status, result.search_duration,
+                                result.total_results_found or result.matches_found, result.exact_matches, result.partial_matches,
+                                result.match_category, i, match.get('matched_name', ''), match.get('match_type', ''),
+                                match.get('date_of_birth', match.get('birth_date', '')), location_full,
+                                match.get('address', ''), match.get('city', match.get('suburb', '')),
+                                match.get('state', ''), match.get('postcode', ''),
+                                '; '.join([f"{k}: {v}" for k, v in match.items() 
+                                          if k not in ['matched_name', 'match_type', 'date_of_birth', 'birth_date', 'address', 'city', 'suburb', 'state', 'postcode']])
+                            ])
+                writer.writerow([])
+            
+            # Section 2: UNMATCHED RESULTS
+            unmatched_results = [r for r in self.search_results if r.matches_found == 0 and r.status != 'Error']
+            if unmatched_results:
+                writer.writerow(['=== UNMATCHED RESULTS (FOR ANALYSIS) ==='])
+                writer.writerow([
+                    'Search_Name', 'Birth_Year', 'Status', 'Duration_Seconds',
+                    'Total_Results_Searched', 'Match_Category', 'Analysis_Notes'
+                ])
+                
+                for result in unmatched_results:
+                    writer.writerow([
+                        result.name, result.birth_year or '', result.status, result.search_duration,
+                        result.total_results_found or 0, result.match_category,
+                        f"Name not found in {result.total_results_found or 0} search results"
+                    ])
+                writer.writerow([])
+            
+            # Section 3: ERROR RESULTS
+            error_results = [r for r in self.search_results if r.status == 'Error']
+            if error_results:
+                writer.writerow(['=== ERROR RESULTS ==='])
+                writer.writerow(['Search_Name', 'Birth_Year', 'Duration_Seconds', 'Error_Message'])
+                
+                for result in error_results:
+                    writer.writerow([
+                        result.name, result.birth_year or '', result.search_duration,
+                        result.error or 'Unknown error'
+                    ])
     
     def export_json(self, filename: str):
         """Export comprehensive results as JSON with detailed match information"""
@@ -1657,13 +1986,13 @@ class ReadySearchGUI:
         messagebox.showinfo("Cleared", "Batch input cleared and test data reloaded.")
     
     def load_names_file(self):
-        """Load names from a file"""
+        """Load names from a file with enhanced JSON support"""
         filename = filedialog.askopenfilename(
             title="Load Names File",
             filetypes=[
+                ("JSON files", "*.json"),
                 ("Text files", "*.txt"),
                 ("CSV files", "*.csv"),
-                ("JSON files", "*.json"),
                 ("All files", "*.*")
             ]
         )
@@ -1672,15 +2001,111 @@ class ReadySearchGUI:
             return
         
         try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                content = f.read()
+            file_ext = Path(filename).suffix.lower()
             
-            # Clear current content and insert loaded content
-            self.batch_text.delete("1.0", tk.END)
-            self.batch_text.insert(tk.END, content)
+            if file_ext == '.json':
+                # Handle JSON files with enhanced parsing
+                with open(filename, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                # Parse different JSON formats
+                names_list = []
+                
+                if isinstance(data, list):
+                    # Simple list format: ["Name1", "Name2", ...]
+                    # or list of objects: [{"name": "Name1", "birth_year": 1990}, ...]
+                    for item in data:
+                        if isinstance(item, str):
+                            names_list.append(item)
+                        elif isinstance(item, dict):
+                            name = item.get('name', item.get('Name', ''))
+                            birth_year = item.get('birth_year', item.get('Birth_Year', item.get('year', '')))
+                            if name:
+                                if birth_year:
+                                    names_list.append(f"{name},{birth_year}")
+                                else:
+                                    names_list.append(name)
+                
+                elif isinstance(data, dict):
+                    # Handle different object formats
+                    if 'names' in data:
+                        # Format: {"names": ["Name1", "Name2", ...]}
+                        for name in data['names']:
+                            names_list.append(str(name))
+                    elif 'search_list' in data:
+                        # Format: {"search_list": [...]}
+                        for item in data['search_list']:
+                            if isinstance(item, str):
+                                names_list.append(item)
+                            elif isinstance(item, dict) and 'name' in item:
+                                name = item['name']
+                                birth_year = item.get('birth_year', '')
+                                if birth_year:
+                                    names_list.append(f"{name},{birth_year}")
+                                else:
+                                    names_list.append(name)
+                    else:
+                        # Try to extract names from any format
+                        for key, value in data.items():
+                            if isinstance(value, list):
+                                for item in value:
+                                    if isinstance(item, str):
+                                        names_list.append(item)
+                                    elif isinstance(item, dict) and 'name' in item:
+                                        name = item['name']
+                                        birth_year = item.get('birth_year', '')
+                                        if birth_year:
+                                            names_list.append(f"{name},{birth_year}")
+                                        else:
+                                            names_list.append(name)
+                
+                if names_list:
+                    content = '\n'.join(names_list)
+                    # Clear current content and insert parsed names
+                    self.batch_text.delete("1.0", tk.END)
+                    self.batch_text.insert(tk.END, content)
+                    
+                    messagebox.showinfo("JSON Loaded", 
+                        f"Successfully loaded {len(names_list)} names from JSON file:\n{filename}")
+                else:
+                    messagebox.showwarning("JSON Parse Warning", 
+                        "No names found in JSON file. Please check the format.")
             
-            messagebox.showinfo("File Loaded", f"Names loaded from:\n{filename}")
+            elif file_ext == '.csv':
+                # Enhanced CSV handling
+                with open(filename, 'r', encoding='utf-8') as f:
+                    csv_content = f.read()
+                
+                # Try to parse as CSV with name,birth_year format
+                names_list = []
+                for line in csv_content.split('\n'):
+                    line = line.strip()
+                    if line and not line.startswith('#'):  # Skip empty and comment lines
+                        names_list.append(line)
+                
+                if names_list:
+                    content = '\n'.join(names_list)
+                    self.batch_text.delete("1.0", tk.END)
+                    self.batch_text.insert(tk.END, content)
+                    
+                    messagebox.showinfo("CSV Loaded", 
+                        f"Successfully loaded {len(names_list)} entries from CSV file:\n{filename}")
+                else:
+                    messagebox.showwarning("CSV Parse Warning", "No valid entries found in CSV file.")
             
+            else:
+                # Handle text files and other formats
+                with open(filename, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # Clear current content and insert loaded content
+                self.batch_text.delete("1.0", tk.END)
+                self.batch_text.insert(tk.END, content)
+                
+                messagebox.showinfo("File Loaded", f"Content loaded from:\n{filename}")
+            
+        except json.JSONDecodeError as e:
+            messagebox.showerror("JSON Error", f"Invalid JSON format:\n{str(e)}")
         except Exception as e:
             messagebox.showerror("Load Error", f"Failed to load file:\n{str(e)}")
     
