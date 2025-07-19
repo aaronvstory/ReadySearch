@@ -100,9 +100,35 @@ Thumbs.db
 logs/
 launcher.log
 
-# File Management
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Browser automation
+downloads/
+.playwright/
+screenshots/
+test-results/
+
+# Application specific
+readysearch_results/
+readysearch_results.json
+search_results.*
+*.results
+emergency_results/
+ultra_verbose_results/
+
+# File Management  
 backups/
-archive/
+archive/data/*.json
+archive/logs/*.log
+archive/screenshots/*.png
 
 # Temporary files
 *.tmp

@@ -1,4 +1,0 @@
-name,status,timestamp,error,search_time
-Andro Cutuk,Error,2025-07-18 10:48:15,Search input not found,0.0
-Anthony Bek,Error,2025-07-18 10:48:24,"Page.screenshot: Target page, context or browser has been closed",0.0
-Ghafoor Jaggi Nadery,Error,2025-07-18 10:48:33,"Page.screenshot: Target page, context or browser has been closed",0.0
