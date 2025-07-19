@@ -1,0 +1,13 @@
+[
+  {
+    "name": "John Smith",
+    "birth_year": 1985
+  },
+  {
+    "name": "Jane Doe",
+    "birth_year": 1990
+  },
+  {
+    "name": "Test Person"
+  }
+]
