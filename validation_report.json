@@ -1,26 +1,26 @@
 {
-  "timestamp": "2025-07-19T01:50:02.924354",
+  "timestamp": "2025-07-19T02:12:16.141214",
   "results": {
     "cli": [
       {
         "name": "Anthony Bek,1993",
         "status": "Match",
         "matches_found": 6,
-        "duration": 6.84315824508667,
+        "duration": 6.91616678237915,
         "success": true
       },
       {
         "name": "Andro Cutuk,1975",
         "status": "Match",
         "matches_found": 2,
-        "duration": 6.830354452133179,
+        "duration": 6.798485517501831,
         "success": true
       },
       {
         "name": "Ghafoor Jaggi Nadery,1978",
-        "status": "Error",
+        "status": "No Match",
         "matches_found": 0,
-        "duration": 7.240326404571533,
+        "duration": 7.290061950683594,
         "success": true
       }
     ],
@@ -44,7 +44,7 @@
     },
     "performance": {
       "cli_success_rate": 1.0,
-      "cli_avg_duration": 6.971279700597127,
+      "cli_avg_duration": 7.001571416854858,
       "interface_scores": {
         "CLI": 1.0,
         "GUI": 1.0,

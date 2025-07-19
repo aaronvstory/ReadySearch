@@ -64,7 +64,9 @@ class ReadySearchAutomation:
                 
             # Process each name with enhanced validation
             for i, name in enumerate(names, 1):
-                self.logger.info(f"Processing {i}/{len(names)}: {name}")
+                # Extract name string for logging and reporting
+                name_str = name.name if hasattr(name, 'name') else str(name)
+                self.logger.info(f"Processing {i}/{len(names)}: {name_str}")
                 
                 try:
                     # Search for the name with enhanced validation
@@ -74,9 +76,9 @@ class ReadySearchAutomation:
                     self._process_search_result(name, search_result)
                         
                 except Exception as e:
-                    self.logger.error(f"Error processing {name}: {str(e)}")
+                    self.logger.error(f"Error processing {name_str}: {str(e)}")
                     self.reporter.add_result(
-                        name=name,
+                        name=name_str,
                         status='Error',
                         error=str(e)
                     )

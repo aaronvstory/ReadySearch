@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-19T01:58:11.929684",
+  "timestamp": "2025-07-19T02:09:52.387091",
   "test_results": {
     "cli_edge_cases": [
       {
@@ -302,7 +302,7 @@
     "performance_edge_cases": [
       {
         "test": "Single long name",
-        "duration": 6.495983839035034,
+        "duration": 6.314011335372925,
         "acceptable_duration": true,
         "no_memory_issues": true,
         "success": true,
@@ -310,7 +310,7 @@
       },
       {
         "test": "Name with many parts",
-        "duration": 2.411973714828491,
+        "duration": 9.669472932815552,
         "acceptable_duration": true,
         "no_memory_issues": true,
         "success": true,
@@ -318,7 +318,7 @@
       },
       {
         "test": "Multiple similar names",
-        "duration": 6.756657123565674,
+        "duration": 7.711815118789673,
         "acceptable_duration": true,
         "no_memory_issues": true,
         "success": true,
