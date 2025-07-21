@@ -68,7 +68,7 @@ echo.
 echo 📋 Requirements: Rich library (will auto-install if needed)
 echo.
 pause
-python enhanced_cli.py
+python "%~dp0enhanced_cli.py"
 echo.
 echo 🎉 Enhanced CLI session completed!
 pause

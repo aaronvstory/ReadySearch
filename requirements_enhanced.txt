@@ -1,0 +1,20 @@
+# Enhanced ReadySearch CLI Requirements
+# Core dependencies
+asyncio
+rich>=13.0.0
+playwright>=1.40.0
+psutil>=5.9.0
+
+# Existing dependencies
+requests
+beautifulsoup4
+lxml
+pandas
+openpyxl
+
+# Optional optimization dependencies
+concurrent-futures
+
+# Development and testing
+pytest
+pytest-asyncio

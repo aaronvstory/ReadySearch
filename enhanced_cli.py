@@ -8,6 +8,7 @@ import sys
 import json
 import csv
 import time
+import argparse
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -562,11 +563,80 @@ Enter names in these formats:
             style=self.colors['success']
         )
         self.console.print(goodbye_panel)
+    
+    async def run_cli_mode(self, names_input: str):
+        """Run CLI in batch mode with command line arguments"""
+        self.console.print(Panel(
+            "[bold]ReadySearch Enhanced CLI - Batch Mode[/bold]",
+            style=self.colors['primary']
+        ))
+        
+        # Parse and process names
+        results = await self.perform_search(names_input)
+        
+        if results:
+            # Add results to session BEFORE displaying
+            self.session_results.extend(results)
+            
+            # Display summary
+            self.console.print(f"\n[green]✅ Completed {len(results)} searches[/green]\n")
+            
+            # Display results overview
+            self.display_results_overview()
+            
+            # Auto-export to JSON
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"readysearch_batch_{timestamp}"
+            
+            try:
+                self.export_json(filename)
+                self.console.print(f"[green]📄 Results automatically exported to {filename}.json[/green]")
+            except Exception as e:
+                self.console.print(f"[yellow]⚠️ Auto-export failed: {str(e)}[/yellow]")
+        else:
+            self.console.print("[red]❌ No successful searches completed[/red]")
 
 def main():
     """Entry point for enhanced CLI"""
+    parser = argparse.ArgumentParser(
+        description='ReadySearch Enhanced CLI - Professional Name Search Tool',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+Examples:
+  python enhanced_cli.py                                    # Interactive mode
+  python enhanced_cli.py "John Smith"                       # Single name
+  python enhanced_cli.py "John Smith,1990"                 # Single name with birth year
+  python enhanced_cli.py "John Smith,1990;Jane Doe,1985"   # Multiple names
+  python enhanced_cli.py "andro cutuk,1977"                # Test example
+        '''
+    )
+    
+    parser.add_argument(
+        'names',
+        nargs='?',
+        help='Names to search for. Use semicolon (;) to separate multiple names. Use comma (,) to add birth year.'
+    )
+    
+    parser.add_argument(
+        '--batch',
+        action='store_true',
+        help='Force batch mode (non-interactive)'
+    )
+    
+    args = parser.parse_args()
+    
     cli = EnhancedReadySearchCLI()
-    asyncio.run(cli.run())
+    
+    # If names provided as arguments, run in CLI mode
+    if args.names or args.batch:
+        if not args.names:
+            print("Error: No names provided for batch mode")
+            sys.exit(1)
+        
+        asyncio.run(cli.run_cli_mode(args.names))
+    else:
+        # Run interactive mode
+        asyncio.run(cli.run())
 
 if __name__ == "__main__":
     main()
