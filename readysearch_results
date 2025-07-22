@@ -1,2 +1,0 @@
-name,status,timestamp,error,search_time
-"SearchRecord(name='Name', birth_year=None, exact_matching=False)",Error,2025-07-19 02:08:29,ElementHandle.type: Object of type SearchRecord is not JSON serializable,0.0
